@@ -1,0 +1,30 @@
+{
+  "name": "node-act",
+  "version": "0.1.0-alpha",
+  "description": "a simple task runner",
+  "main": "act.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imaginate/act.git"
+  },
+  "author": "Adam Smith <adam@imaginate.life> (https://github.com/imaginate)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/imaginate/act/issues"
+  },
+  "homepage": "https://github.com/imaginate/act",
+  "dependencies": {
+    "node-are": "0.x",
+    "node-vitals": "2.x",
+    "log-ocd": "1.0.0-beta"
+  },
+  "keywords": [
+    "imaginate",
+    "javascript build system",
+    "js build system",
+    "build system",
+    "javascript task runner",
+    "js task runner",
+    "task runner"
+  ]
+}
