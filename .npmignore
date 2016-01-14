@@ -1,0 +1,7 @@
+## DO NOT TRACK
+*.jpg
+*.log
+*.png
+.git
+logs
+node_modules
