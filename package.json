@@ -1,6 +1,6 @@
 {
   "name": "node-act",
-  "version": "0.1.0-alpha",
+  "version": "0.0.1",
   "description": "a simple task runner",
   "main": "act.js",
   "repository": {
@@ -11,6 +11,9 @@
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/imaginate/act/issues"
+  },
+  "bin": {
+    "act": "act.js"
   },
   "homepage": "https://github.com/imaginate/act",
   "dependencies": {
