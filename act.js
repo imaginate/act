@@ -21,3 +21,33 @@
  */
 
 'use strict';
+
+var slice = require('./src/helpers').slice;
+
+var showHelp = require('./src/show-help');
+var getTasks = require('./src/get-tasks');
+var runTasks = require('./src/run-tasks');
+
+/**
+ * @typedef {!Array<string>} Args
+ *
+ * @typedef {!{
+ *   name:    string,
+ *   methods: !Array<string>,
+ *   values:  !Array<(string|undefined)>
+ * }} Task
+ *
+ * @typedef {!Array<Task>} Tasks
+ */
+
+/** @type {Args} */
+var args;
+/** @type {Tasks} */
+var tasks;
+
+args = slice(process.argv, 2);
+
+if ( showHelp(args) ) return;
+
+tasks = getTasks(args);
+runTasks(tasks);
