@@ -26,52 +26,51 @@ var has  = help.has;
 var is   = help.is;
 var log  = help.log;
 
-/** @type {!RegExp} */
-var HELP = /^?$|^-+h(?:elp)?$/;
-
 /**
  * @param {TaskArgs} args
  */
 module.exports = function runTasks(args) {
 
+  /** @type {!(Object|function)} */
+  var methods;
+  /** @type {!(Object|function)} */
+  var method;
   /** @type {!(ReferenceError|TypeError)} */
   var error;
-  /** @type {!(Object|function)} */
-  var task;
 
   each(args, function(arg) {
 
-    task = arg.task;
+    methods = is.func(arg.exports) ? arg.exports : arg.exports.methods;
 
     if (!arg.methods) {
-      if ( !is.func(task.methods) ) {
+      if ( !is.func(methods) ) {
         error = new TypeError('invalid act task exports.methods (must be a function or have a default with valid methods)');
-        log.error('Failed act command', error, { task: task });
+        log.error('Failed act command', error, { task: arg.exports });
       }
-      return task.methods(arg.value);
+      return methods(arg.value);
     }
 
-    if ( !is._obj(task.methods) ) {
+    if ( !is._obj(methods) ) {
       error = new TypeError('invalid act task exports.methods (must be an object/function)');
-      log.error('Failed act command', error, { task: task });
+      log.error('Failed act command', error, { task: arg.exports });
     }
 
-    each(arg.methods, function(method, i, methods) {
+    each(arg.methods, function(argMethod, i, argMethods) {
 
-      if ( !has(task.methods, method) ) {
+      if ( !has(methods, argMethod) ) {
         error = new ReferenceError('act task method does not exist');
-        log.error('Failed act command', error, { task: task, method: method });
+        log.error('Failed act command', error, { task: arg.exports, method: argMethod });
       }
 
-      method = task.methods[method];
+      method = methods[argMethod];
       if ( is.obj(method) ) method = method.method;
 
       if ( !is.func(method) ) {
         error = new TypeError('invalid act task exports.methods.<method>[.method] (must be a function)');
-        log.error('Failed act command', error, { method: methods[i], task: task });
+        log.error('Failed act command', error, { task: arg.exports, method: argMethod });
       }
 
-      method(arg.values[i]);
+      method( arg.values[i] );
     });
   });
 };
