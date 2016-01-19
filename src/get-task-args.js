@@ -22,6 +22,7 @@
 
 var help = require('./helpers');
 var cut  = help.cut;
+var each = help.each;
 var fuse = help.fuse;
 var has  = help.has;
 var is   = help.is;
@@ -78,40 +79,27 @@ module.exports = function getTaskArgs(taskDir, args) {
  */
 function getTaskArg(taskDir, args) {
 
-  /** @type {!(ReferenceError|TypeError)} */
+  /** @type {!ReferenceError} */
   var error;
   /** @type {TaskArg} */
   var task;
   /** @type {string} */
-  var file;
+  var name;
+
+  name = cut(args[0], VALUE);
+
+  if ( !has(name, VALID) ) {
+    error = new ReferenceError('invalid act task name (must start with a letter)');
+    log.error('Failed act command', error, { task: name });
+  }
 
   task = {
-    name:    cut(args[0], VALUE),
+    name:    name,
     value:   null,
     methods: null,
-    values:  null
+    values:  null,
+    exports: getTaskExports(taskDir, name)
   };
-
-  if ( !has(task.name, VALID) ) {
-    error = new ReferenceError('invalid act task name (must start with a letter)');
-    log.error('Failed act command', error, { task: task.name });
-  }
-
-  file = fuse(taskDir, task.name, '.js');
-
-  if ( !is.file(file) ) {
-    error = new ReferenceError('act task does not exist');
-    log.error('Failed act command', error, { task: file });
-  }
-
-  task.task = require(file);
-
-  if ( !is._obj(task.task) ) {
-    error = new TypeError('invalid act task exports (must be an object/function)');
-    log.error('Failed act command', error, { task: name, exported: task.task });
-  }
-
-  task.task.name = task.name;
 
   if ( has(args[0], VALUE) ) {
     task.value = args[1];
@@ -122,30 +110,105 @@ function getTaskArg(taskDir, args) {
   }
 
   if (!args.length) {
-    if ( !is._str(task.task.default) ) return task;
-    args = task.task.default.split(' ');
-    each(args, function(arg, i, args) {
-      if ( has(arg, METHOD) ) return;
-      if ( i && has(args[--i], VALUE) ) return;
-      error = new ReferenceError('invalid act task default method arg');
-      log.error('Failed act command', error, { methodArg: arg });
-    });
+    if ( !is._str(task.exports.default) ) return task;
+    args = getTaskDefaultArgs(task.exports.default);
   }
 
-  task.methods = [];
-  task.values  = [];
+  return buildTaskArgMethods(task, args);
+}
+
+/**
+ * @private
+ * @param {string} taskDir
+ * @param {string} name
+ * @return {!(Object|function)}
+ */
+function getTaskExports(taskDir, name) {
+
+  /** @type {!(ReferenceError|TypeError)} */
+  var error;
+  /** @type {!(Object|function)} */
+  var task;
+  /** @type {string} */
+  var file;
+
+  file = fuse(taskDir, name, '.js');
+
+  if ( !is.file(file) ) {
+    error = new ReferenceError('act task does not exist');
+    log.error('Failed act command', error, { task: file });
+  }
+
+  task = require(file);
+
+  if ( !is._obj(task) ) {
+    error = new TypeError('invalid act task exports (must be an object/function)');
+    log.error('Failed act command', error, { task: name, exports: task });
+  }
+
+  task.name = name;
+  return task;
+}
+
+/**
+ * @private
+ * @param {string} defaultArgs
+ * @return {Args}
+ */
+function getTaskDefaultArgs(defaultArgs) {
+
+  /** @type {!ReferenceError} */
+  var error;
+  /** @type {Args} */
+  var args;
+
+  args = defaultArgs.split(' ');
+  each(args, function(arg, i, args) {
+    if ( has(arg, METHOD) || ( i && has(args[--i], VALUE) ) ) return;
+    error = new ReferenceError('invalid arg in act task exports.default');
+    log.error('Failed act command', error, { default: defaultArgs, arg: arg });
+  });
+  return args;
+}
+
+/**
+ * @private
+ * @param {TaskArg} task
+ * @param {Args} args
+ * @return {TaskArg}
+ */
+function buildTaskArgMethods(task, args) {
+
+  /** @type {!Array} */
+  var methods;
+  /** @type {!Array} */
+  var values;
+  /** @type {*} */
+  var value;
+
+  methods = [];
+  values  = [];
+  value   = task.value;
+
   roll(false, args, function(skip, arg, i, args) {
+
     if (skip) return false;
+
     arg = cut(arg, METHOD);
+
     if ( !has(arg, VALUE) ) {
-      fuse.val(task.methods, arg);
-      fuse.val(task.values, task.value);
+      fuse.val(methods, arg);
+      fuse.val(values, value);
       return false;
     }
+
     arg = cut(arg, VALUE);
-    fuse.val(task.methods, arg);
-    fuse.val(task.values, args[++i]);
+    fuse.val(methods, arg);
+    fuse.val(values, args[++i]);
     return true;
   });
+
+  task.methods = methods;
+  task.values  = values;
   return task;
 }
