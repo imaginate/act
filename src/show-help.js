@@ -76,3 +76,107 @@ module.exports = function showHelp(taskDir, args) {
 
   return true;
 };
+
+//// GET HELP TASKS
+
+/**
+ * @private
+ * @param {string} taskDir
+ * @return {HelpTasks}
+ */
+function getHelpTasks(taskDir) {
+
+  /** @type {!Array<string>} */
+  var tasks;
+
+  tasks = get.filepaths(taskDir, {
+    validFiles: /^[a-z][a-z0-9-.]*.js$/
+  });
+  return remap(tasks, function(task) {
+    return getHelpTask(taskDir, task);
+  });
+}
+
+/**
+ * @private
+ * @param {string} taskDir
+ * @param {string} task
+ * @return {HelpTask}
+ */
+function getHelpTask(taskDir, task) {
+
+  /** @type {!TypeError} */
+  var error;
+  /** @type {string} */
+  var name;
+
+  name = cut(task, /.js$/);
+  task = fuse(taskDir, task);
+  task = require(task);
+
+  if ( !is._obj(task) ) {
+    error = new TypeError(
+      'invalid value exported by an act task (must be an object or function)'
+    );
+    log.error('Failed act command', error, {
+      ocdmap:   true,
+      task:     name,
+      exported: task
+    });
+  }
+
+  return {
+    name:    name,
+    desc:    get(task, /^desc/)[0] || '',
+    val:     get(task, /^val/)[0]  || '',
+    default: task.default || '',
+    methods: getHelpMethods(task.methods)
+  };
+}
+
+/**
+ * @private
+ * @param {(!Object|undefined)} methods
+ * @return {HelpMethods}
+ */
+function getHelpMethods(methods) {
+
+  /** @type {HelpMethods} */
+  var result;
+
+  if ( !is.obj(methods) ) return null;
+
+  result = [];
+  each(methods, function(method, name) {
+    method = getHelpMethod(name, method);
+    fuse.val(result, method);
+  });
+  return result;
+}
+
+/**
+ * @private
+ * @param {string} name
+ * @param {!Object} method
+ * @return {HelpMethod}
+ */
+function getHelpMethod(name, method) {
+
+  /** @type {!TypeError} */
+  var error;
+
+  if ( !is._obj(method) || ( !is.func(method) && !is.func(method.method) ) ) {
+    error = new TypeError('invalid act task method');
+    log.error('Failed act command', error, {
+      ocdmap: true,
+      method: name,
+      value:  method
+    });
+  }
+
+  return {
+    name: name,
+    desc: get(method, /^desc/)[0] || '',
+    val:  get(method, /^val/)[0]  || ''
+  };
+}
