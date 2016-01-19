@@ -22,6 +22,9 @@
 
 'use strict';
 
+// save reference to the base path
+var BASE = process.cwd();
+
 var slice = require('./src/helpers').slice;
 
 var findTaskDir = require('./src/find-task-dir');
@@ -48,7 +51,7 @@ var tasks;
 /** @type {Args} */
 var args;
 
-taskDir = findTaskDir();
+taskDir = findTaskDir(BASE);
 args = slice(process.argv, 2);
 
 if ( showHelp(taskDir, args) ) return;

@@ -21,20 +21,23 @@
 'use strict';
 
 var help = require('./helpers');
-var get = help.get;
-var log = help.log;
+var get   = help.get;
+var fuse  = help.fuse;
+var log   = help.log;
+var remap = help.remap;
 
 /**
+ * @param {string} basepath
  * @return {string}
  */
-module.exports = function findTaskDir() {
+module.exports = function findTaskDir(basepath) {
 
   /** @type {!Error} */
   var error;
   /** @type {!Array<string>} */
   var dirs;
 
-  dirs = get.dirpaths('.', { validDirs: /^_?act-?tasks?$/ });
+  dirs = get.dirpaths(basepath, { validDirs: /^_?act-?tasks?$/ });
 
   if (!dirs.length) {
     error = new Error('no valid act task directory found');
@@ -46,5 +49,6 @@ module.exports = function findTaskDir() {
     log.error('Failed act command', error);
   }
 
-  return dirs[0];
+  basepath = remap(basepath, '\\', '/');
+  return fuse(basepath, '/', dirs[0], '/');
 };
