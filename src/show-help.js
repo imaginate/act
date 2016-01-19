@@ -62,6 +62,10 @@ module.exports = function showHelp(taskDir, args) {
 
   /** @type {string} */
   var result;
+  /** @type {HelpTasks} */
+  var tasks;
+  /** @type {number} */
+  var len;
 
   if ( args.length && !has(args[0], HELP) ) return false;
 
@@ -71,13 +75,19 @@ module.exports = function showHelp(taskDir, args) {
   result = fuse(result, '          act task task -method task\n');
   result = fuse(result, '          act task= value task -method= value\n\n');
   result = fuse(result, 'Tasks:\n');
-  result = roll.up(result, getHelpTasks(taskDir), printHelpTask);
+
+  tasks = getHelpTasks(taskDir);
+  len = getHelpTasksLen(tasks);
+  result = roll.up(result, tasks, function(task) {
+    return printHelpTask(task, len);
+  });
+
   console.log(result);
 
   return true;
 };
 
-//// GET HELP TASKS
+////// GET HELP TASKS
 
 /**
  * @private
@@ -136,6 +146,23 @@ function getHelpTask(taskDir, task) {
 
 /**
  * @private
+ * @param {HelpTasks} tasks
+ * @return {number}
+ */
+function getHelpTasksLen(tasks) {
+
+  /** @type {number} */
+  var len;
+
+  return 2 + roll(0, tasks, function(max, task) {
+    len = task.name.length;
+    if (task.val.length) len += task.val.length + 4;
+    return len > max ? len : max;
+  });
+}
+
+/**
+ * @private
  * @param {(!Object|undefined)} methods
  * @return {HelpMethods}
  */
@@ -179,4 +206,70 @@ function getHelpMethod(name, method) {
     desc: get(method, /^desc/)[0] || '',
     val:  get(method, /^val/)[0]  || ''
   };
+}
+
+/**
+ * @private
+ * @param {HelpMethods} methods
+ * @return {number}
+ */
+function getHelpMethodsLen(methods) {
+
+  /** @type {number} */
+  var len;
+
+  return 5 + roll(0, methods, function(max, method) {
+    len = method.name.length;
+    if (method.val.length) len += method.val.length + 4;
+    return len > max ? len : max;
+  });
+}
+
+////// PRINT HELP TASKS
+
+/**
+ * @private
+ * @param {HelpTask} task
+ * @param {number} len
+ * @return {string}
+ */
+function printHelpTask(task, len) {
+
+  /** @type {string} */
+  var result;
+  /** @type {string} */
+  var space;
+
+  result = task.val ? fuse(task.name, '[= ', task.val, ']') : task.name;
+  space = fill(len - result.length, ' ');
+  result = fuse('  ', result, space, task.desc, '\n');
+  if (task.default) {
+    space = fill(len + 2, ' ');
+    result = fuse(result, space, 'default: ', task.default, '\n');
+  }
+  if (task.methods) {
+    len = getHelpMethodsLen(task.methods);
+    result = roll.up(result, task.methods, function(method) {
+      return printHelpMethod(method, len);
+    });
+  }
+  return result;
+}
+
+/**
+ * @private
+ * @param {HelpMethod} method
+ * @param {number} len
+ * @return {string}
+ */
+function printHelpMethod(method, len) {
+
+  /** @type {string} */
+  var result;
+  /** @type {string} */
+  var space;
+
+  result = method.val ? fuse(method.name, '[= ', method.val, ']') : method.name;
+  space = fill(len - result.length, ' ');
+  return fuse('    -', result, space, method.desc, '\n');
 }
