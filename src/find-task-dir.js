@@ -1,8 +1,6 @@
-#!/usr/bin/env node
-
 /**
  * -----------------------------------------------------------------------------
- * ACT
+ * ACT: FIND-TASK-DIR
  * -----------------------------------------------------------------------------
  * @version 0.0.1
  * @see [act]{@link https://github.com/imaginate/act}
@@ -22,36 +20,31 @@
 
 'use strict';
 
-var slice = require('./src/helpers').slice;
-
-var findTaskDir = require('./src/find-task-dir');
-var showHelp = require('./src/show-help');
-var getTasks = require('./src/get-tasks');
-var runTasks = require('./src/run-tasks');
+var help = require('./helpers');
+var get = help.get;
+var log = help.log;
 
 /**
- * @typedef {!Array<string>} Args
- *
- * @typedef {!{
- *   name:    string,
- *   methods: !Array<string>,
- *   values:  !Array<(string|undefined)>
- * }} Task
- *
- * @typedef {!Array<Task>} Tasks
+ * @return {string}
  */
+module.exports = function findTaskDir() {
 
-/** @type {string} */
-var taskDir;
-/** @type {Tasks} */
-var tasks;
-/** @type {Args} */
-var args;
+  /** @type {!Error} */
+  var error;
+  /** @type {!Array<string>} */
+  var dirs;
 
-taskDir = findTaskDir();
-args = slice(process.argv, 2);
+  dirs = get.dirpaths('.', { validDirs: /^_?act-?tasks?$/ });
 
-if ( showHelp(taskDir, args) ) return;
+  if (!dirs.length) {
+    error = new Error('no valid act task directory found');
+    log.error('Failed act command', error);
+  }
 
-tasks = getTasks(taskDir, args);
-runTasks(tasks);
+  if (dirs.length > 1) {
+    error = new Error('multiple act task directories found');
+    log.error('Failed act command', error);
+  }
+
+  return dirs[0];
+};
