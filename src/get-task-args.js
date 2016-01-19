@@ -111,6 +111,8 @@ function getTaskArg(taskDir, args) {
     log.error('Failed act command', error, { task: name, exported: task.task });
   }
 
+  task.task.name = task.name;
+
   if ( has(args[0], VALUE) ) {
     task.value = args[1];
     args = slice(args, 2);
