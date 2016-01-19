@@ -1,8 +1,6 @@
-#!/usr/bin/env node
-
 /**
  * -----------------------------------------------------------------------------
- * ACT
+ * ACT: SHOW-VERSION
  * -----------------------------------------------------------------------------
  * @version 0.0.1
  * @see [act]{@link https://github.com/imaginate/act}
@@ -22,32 +20,22 @@
 
 'use strict';
 
-// save reference to the base path
-var BASE = process.cwd();
+var has = require('./helpers').has;
 
-var slice = require('./src/helpers').slice;
-
-var findTaskDir = require('./src/find-task-dir');
-var showHelp    = require('./src/show-help');
-var showVersion = require('./src/show-version');
-var getTaskArgs = require('./src/get-task-args');
-var runTasks    = require('./src/run-tasks');
+/** @type {!RegExp} */
+var VERSION = /^-+v(?:ersion)?$/;
+/** @type {string} */
+var CURRENT = 'v0.0.1';
 
 /**
- * @typedef {!Array<string>} Args
+ * @param {Args} args
+ * @return {boolean}
  */
+module.exports = function showVersion(args) {
 
-/** @type {string} */
-var taskDir;
-/** @type {TaskArgs} */
-var tasks;
-/** @type {Args} */
-var args;
+  if ( !has(args[0], VERSION) ) return false;
 
-taskDir = findTaskDir(BASE);
-args = slice(process.argv, 2);
+  console.log(CURRENT);
 
-if ( showHelp(taskDir, args) || showVersion(args) ) return;
-
-tasks = getTaskArgs(args);
-runTasks(taskDir, tasks);
+  return true;
+};
