@@ -127,14 +127,8 @@ function getHelpTask(taskDir, task) {
   task = require(task);
 
   if ( !is._obj(task) ) {
-    error = new TypeError(
-      'invalid value exported by an act task (must be an object or function)'
-    );
-    log.error('Failed act command', error, {
-      ocdmap:   true,
-      task:     name,
-      exported: task
-    });
+    error = new TypeError('invalid act task exports (must be an object/function)');
+    log.error('Failed act command', error, { task: name, exported: task });
   }
 
   return {
@@ -196,11 +190,7 @@ function getHelpMethod(name, method) {
 
   if ( !is._obj(method) || ( !is.func(method) && !is.func(method.method) ) ) {
     error = new TypeError('invalid act task method');
-    log.error('Failed act command', error, {
-      ocdmap: true,
-      method: name,
-      value:  method
-    });
+    log.error('Failed act command', error, { method: name, value: method });
   }
 
   return {
