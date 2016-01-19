@@ -22,9 +22,11 @@
 
 var help = require('./helpers');
 var cut   = help.cut;
+var each  = help.each;
 var fill  = help.fill;
 var fuse  = help.fuse;
 var get   = help.get;
+var has   = help.has;
 var is    = help.is;
 var log   = help.log;
 var remap = help.remap;
