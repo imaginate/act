@@ -49,5 +49,5 @@ args = slice(process.argv, 2);
 
 if ( showHelp(taskDir, args) || showVersion(args) ) return;
 
-tasks = getTaskArgs(args);
-runTasks(taskDir, tasks);
+tasks = getTaskArgs(taskDir, args);
+runTasks(tasks);
