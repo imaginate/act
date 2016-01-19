@@ -47,6 +47,7 @@ exports.until  = vitals.until;
 // see https://github.com/imaginate/log-ocd
 var log = require('log-ocd')();
 log.error.setConfig({
+  'ocdmap': true,
   'throw': false,
   'exit':  true
 });
