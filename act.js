@@ -28,25 +28,17 @@ var BASE = process.cwd();
 var slice = require('./src/helpers').slice;
 
 var findTaskDir = require('./src/find-task-dir');
-var showHelp = require('./src/show-help');
-var getTasks = require('./src/get-tasks');
-var runTasks = require('./src/run-tasks');
+var showHelp    = require('./src/show-help');
+var getTaskArgs = require('./src/get-task-args');
+var runTasks    = require('./src/run-tasks');
 
 /**
  * @typedef {!Array<string>} Args
- *
- * @typedef {!{
- *   name:    string,
- *   methods: !Array<string>,
- *   values:  !Array<(string|undefined)>
- * }} Task
- *
- * @typedef {!Array<Task>} Tasks
  */
 
 /** @type {string} */
 var taskDir;
-/** @type {Tasks} */
+/** @type {TaskArgs} */
 var tasks;
 /** @type {Args} */
 var args;
@@ -56,5 +48,5 @@ args = slice(process.argv, 2);
 
 if ( showHelp(taskDir, args) ) return;
 
-tasks = getTasks(taskDir, args);
-runTasks(tasks);
+tasks = getTaskArgs(args);
+runTasks(taskDir, tasks);
