@@ -21,26 +21,20 @@
 'use strict';
 
 var help = require('./helpers');
-var each  = help.each;
-var fuse  = help.fuse;
-var get   = help.get;
-var has   = help.has;
-var is    = help.is;
-var log   = help.log;
-var until = help.until;
+var each = help.each;
+var fuse = help.fuse;
+var has  = help.has;
 
 /**
  * @typedef {Object<string, string>} Shortcuts
  */
 
 /** @type {!RegExp} */
-var SHORTCUTS = /^_?shortcuts?(?:.json)?$/;
-/** @type {!RegExp} */
-var CONFIG = /^_?config(?:.json)?$/;
-/** @type {!RegExp} */
 var METHOD = /^-/;
 /** @type {!RegExp} */
 var VALUE = /=$/;
+
+var findShortcuts = require('./find-shortcuts');
 
 /**
  * @param {string} taskDir
@@ -56,14 +50,9 @@ module.exports = function insertShortcuts(taskDir, args) {
   /** @type {!TypeError} */
   var error;
 
-  shortcuts = getShortcuts(taskDir);
+  shortcuts = findShortcuts(taskDir);
 
   if (!shortcuts) return args;
-
-  if ( !is('stringMap', shortcuts) ) {
-    error = new TypeError('invalid act shortcuts (must be an object with string values)');
-    log.error('Failed act command', error, { shortcuts: shortcuts });
-  }
 
   newArgs = [];
   each(args, function(arg, i, args) {
@@ -85,56 +74,3 @@ module.exports = function insertShortcuts(taskDir, args) {
 
   return newArgs;
 };
-
-/**
- * @private
- * @param {string} taskDir
- * @return {?Shortcuts}
- */
-function getShortcuts(taskDir) {
-
-  /** @type {!TypeError} */
-  var error;
-  /** @type {!Array<string>} */
-  var files;
-  /** @type {string} */
-  var file;
-
-  files = get.filepaths(taskDir, { validExts: 'json' });
-
-  if (!files.length) return null;
-
-  // check for shortcuts.json
-  until(true, files, function(filename) {
-    if ( !has(filename, SHORTCUTS) ) return false;
-    file = filename;
-    return true;
-  });
-
-  // handle for shortcuts.json
-  if (file) {
-    file = fuse(taskDir, file);
-    return require(file);
-  }
-
-  // check for config.json
-  until(true, files, function(filename) {
-    if ( !has(filename, CONFIG) ) return false;
-    file = filename;
-    return true;
-  });
-
-  // handle for config.json
-  file = fuse(taskDir, file);
-  config = require(file);
-
-  if (!config) return null;
-
-  if ( !is.obj(config) ) {
-    error = new TypeError('invalid act config.json (must be an object)');
-    log.error('Failed act command', error, { file: file, config: config });
-  }
-
-  // if config has a shortcuts property return its value
-  return get(config, SHORTCUTS)[0] || null;
-}
