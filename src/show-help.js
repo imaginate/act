@@ -53,7 +53,7 @@ var roll  = help.roll;
  */
 
 /** @type {!RegExp} */
-var HELP = /^?|-+h(?:elp)?$/;
+var HELP = /^\?|-+h(?:elp)?$/;
 
 var findShortcuts = require('./find-shortcuts');
 
@@ -76,11 +76,12 @@ module.exports = function showHelp(taskDir, args) {
   if ( args.length && !has(args[0], HELP) ) return false;
 
   result = '\n';
-  result = fuse(result, 'Use: act <task> [...<-method>]\n\n');
-  result = fuse(result, 'Examples: act task -method -method\n');
-  result = fuse(result, '          act task task -method task\n');
-  result = fuse(result, '          act task= value task -method= value\n\n');
-  result = fuse(result, 'Tasks:\n');
+  result = fuse(result, '  usage: act <task> [...<-method>]\n\n');
+  result = fuse(result, '  examples:\n');
+  result = fuse(result, '    act task -method -method\n');
+  result = fuse(result, '    act task task -method task\n');
+  result = fuse(result, '    act task= value task -method= value\n\n');
+  result = fuse(result, '  tasks:\n');
 
   tasks = getHelpTasks(taskDir);
   len = getHelpTasksLen(tasks);
@@ -90,7 +91,7 @@ module.exports = function showHelp(taskDir, args) {
 
   shortcuts = findShortcuts(taskDir);
   if (shortcuts) {
-    result = fuse(result, '\n', 'Shortcuts:\n');
+    result = fuse(result, '\n', '  shortcuts:\n');
     len = getShortcutsLen(shortcuts);
     result = roll.up(result, shortcuts, function(cmd, name) {
       return printShortcut(name, cmd, len);
@@ -223,7 +224,7 @@ function getHelpMethodsLen(methods) {
   /** @type {number} */
   var len;
 
-  return 5 + roll(0, methods, function(max, method) {
+  return 2 + roll(0, methods, function(max, method) {
     len = method.name.length;
     if (method.val.length) len += method.val.length + 4;
     return len > max ? len : max;
@@ -245,13 +246,13 @@ function printHelpTask(task, len) {
   /** @type {string} */
   var space;
 
-  result = task.val ? fuse(task.name, '[= ', task.val, ']') : task.name;
+  result = task.val ? fuse(task.name, '= <', task.val, '>') : task.name;
   space = fill(len - result.length, ' ');
-  result = fuse('  ', result, space, task.desc, '\n');
+  result = fuse(fill(4, ' '), result, space, task.desc);
   if (task.default) {
-    space = fill(len + 2, ' ');
-    result = fuse(result, space, 'default: ', task.default, '\n');
+    result = fuse(result, ' ', '(default: "', task.default, '")');
   }
+  result = fuse(result, '\n');
   if (task.methods) {
     len = getHelpMethodsLen(task.methods);
     result = roll.up(result, task.methods, function(method) {
@@ -274,9 +275,9 @@ function printHelpMethod(method, len) {
   /** @type {string} */
   var space;
 
-  result = method.val ? fuse(method.name, '[= ', method.val, ']') : method.name;
+  result = method.val ? fuse(method.name, '= <', method.val, '>') : method.name;
   space = fill(len - result.length, ' ');
-  return fuse('    -', result, space, method.desc, '\n');
+  return fuse(fill(6, ' '), '-', result, space, method.desc, '\n');
 }
 
 ////// PRINT SHORTCUTS
