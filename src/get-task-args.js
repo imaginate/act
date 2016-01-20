@@ -21,13 +21,14 @@
 'use strict';
 
 var help = require('./helpers');
-var cut  = help.cut;
-var each = help.each;
-var fuse = help.fuse;
-var has  = help.has;
-var is   = help.is;
-var log  = help.log;
-var roll = help.roll;
+var cut   = help.cut;
+var each  = help.each;
+var fuse  = help.fuse;
+var has   = help.has;
+var is    = help.is;
+var log   = help.log;
+var roll  = help.roll;
+var slice = help.slice;
 
 /**
  * @typedef {!{
