@@ -35,7 +35,7 @@ module.exports = function showVersion(args) {
 
   if ( !has(args[0], VERSION) ) return false;
 
-  console.log(CURRENT);
+  console.log('\n', CURRENT);
 
   return true;
 };
