@@ -55,6 +55,8 @@ var roll  = help.roll;
 /** @type {!RegExp} */
 var HELP = /^?$|^-+h(?:elp)?$/;
 
+var findShortcuts = require('./find-shortcuts');
+
 /**
  * @param {string} taskDir
  * @param {Args} args
@@ -62,6 +64,8 @@ var HELP = /^?$|^-+h(?:elp)?$/;
  */
 module.exports = function showHelp(taskDir, args) {
 
+  /** @type {?Shortcuts} */
+  var shortcuts;
   /** @type {string} */
   var result;
   /** @type {HelpTasks} */
@@ -83,6 +87,15 @@ module.exports = function showHelp(taskDir, args) {
   result = roll.up(result, tasks, function(task) {
     return printHelpTask(task, len);
   });
+
+  shortcuts = findShortcuts(taskDir);
+  if (shortcuts) {
+    result = fuse(result, '\n', 'Shortcuts:\n');
+    len = getShortcutsLen(shortcuts);
+    result = roll.up(result, shortcuts, function(cmd, name) {
+      return printShortcut(name, cmd, len);
+    });
+  }
 
   console.log(result);
 
@@ -264,4 +277,38 @@ function printHelpMethod(method, len) {
   result = method.val ? fuse(method.name, '[= ', method.val, ']') : method.name;
   space = fill(len - result.length, ' ');
   return fuse('    -', result, space, method.desc, '\n');
+}
+
+////// PRINT SHORTCUTS
+
+/**
+ * @private
+ * @param {Shortcuts} shortcuts
+ * @return {number}
+ */
+function getShortcutsLen(shortcuts) {
+
+  /** @type {number} */
+  var len;
+
+  return 2 + roll(0, shortcuts, function(max, cmd, name) {
+    len = name.length;
+    return len > max ? len : max;
+  });
+}
+
+/**
+ * @private
+ * @param {string} name
+ * @param {string} cmd
+ * @param {number} len
+ * @return {string}
+ */
+function printShortcut(name, cmd, len) {
+
+  /** @type {string} */
+  var space;
+
+  space = fill(len - name.length, ' ');
+  return fuse('  ', name, space, '"', cmd, '"', '\n');
 }
