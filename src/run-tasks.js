@@ -40,14 +40,15 @@ module.exports = function runTasks(args) {
 
   each(args, function(arg) {
 
-    methods = is.func(arg.exports) ? arg.exports : arg.exports.methods;
+    methods = arg.exports;
 
     if (!arg.methods) {
-      if ( !is.func(methods) ) {
-        error = new TypeError('invalid act task exports.methods (must be a function or have a default with valid methods)');
+      method = is.func(methods) ? methods : methods.method || methods.methods;
+      if ( !is.func(method) ) {
+        error = new TypeError('invalid act task exports.method (must be a function)');
         log.error('Failed act command', error, { task: arg.exports });
       }
-      return methods(arg.value);
+      return method(arg.value);
     }
 
     if ( !is._obj(methods) ) {
