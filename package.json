@@ -1,6 +1,6 @@
 {
   "name": "node-act",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha.1",
   "description": "a simple task runner",
   "main": "act.js",
   "repository": {
@@ -19,7 +19,7 @@
   "dependencies": {
     "node-are": "0.x",
     "node-vitals": "2.x",
-    "log-ocd": "1.0.0-beta"
+    "log-ocd": ">1.0.0-beta"
   },
   "keywords": [
     "imaginate",
