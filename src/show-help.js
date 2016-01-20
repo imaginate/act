@@ -53,7 +53,7 @@ var roll  = help.roll;
  */
 
 /** @type {!RegExp} */
-var HELP = /^?$|^-+h(?:elp)?$/;
+var HELP = /^?|-+h(?:elp)?$/;
 
 var findShortcuts = require('./find-shortcuts');
 
