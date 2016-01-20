@@ -51,6 +51,8 @@ module.exports = function runTasks(args) {
       return method(arg.value);
     }
 
+    methods = arg.exports.methods;
+
     if ( !is._obj(methods) ) {
       error = new TypeError('invalid act task exports.methods (must be an object/function)');
       log.error('Failed act command', error, { task: arg.exports });
