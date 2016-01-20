@@ -59,15 +59,32 @@ module.exports = function getTaskArgs(taskDir, args) {
   var tasks;
   /** @type {TaskArg} */
   var task;
+  /** @type {number} */
+  var last;
 
   tasks = [];
-  roll(0, args, function(start, arg, i, args) {
+  last = roll(0, args, function(start, arg, i, args) {
+
+    // if one of the following is true return the previous start index:
+    // - first arg
+    // - arg is a method
+    // - arg is a value
     if ( !i || has(arg, METHOD) || has(args[i - 1], VALUE) ) return start;
+
+    // the current arg is assumed to be the next task so
+    // - save the prior task's args and
+    // - return the new start index
     args = slice(args, start, i);
     task = getTaskArg(taskDir, args);
     fuse.val(tasks, task);
     return i;
   });
+
+  // save the last task's args
+  args = slice(args, last);
+  task = getTaskArg(taskDir, args);
+  fuse.val(tasks, task);
+
   return tasks;
 };
 
