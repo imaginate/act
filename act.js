@@ -49,5 +49,6 @@ args = slice(process.argv, 2);
 
 if ( showHelp(taskDir, args) || showVersion(args) ) return;
 
+args = insertShortcuts(taskDir, args);
 tasks = getTaskArgs(taskDir, args);
 runTasks(tasks);
