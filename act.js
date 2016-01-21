@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * -----------------------------------------------------------------------------
  * ACT
@@ -25,7 +23,18 @@
 // save reference to the base path
 var BASE = process.cwd();
 
-var slice = require('./src/helpers').slice;
+var help = require('./src/helpers');
+var cut = help.cut;
+var log = help.log;
+
+/**
+ * @typedef {!Array<string>} Args
+ */
+
+/** @type {!RegExp} */
+var TRIM_START = /^ *(?:act +)?/;
+/** @type {!RegExp} */
+var TRIM_END = / +$/;
 
 var findTaskDir  = require('./src/find-task-dir');
 var showHelp     = require('./src/show-help');
@@ -35,21 +44,33 @@ var getTaskArgs  = require('./src/get-task-args');
 var runTasks     = require('./src/run-tasks');
 
 /**
- * @typedef {!Array<string>} Args
+ * @public
+ * @param {string} cmd
  */
+module.exports = function initAct(cmd) {
 
-/** @type {string} */
-var taskDir;
-/** @type {TaskArgs} */
-var tasks;
-/** @type {Args} */
-var args;
+  /** @type {string} */
+  var taskDir;
+  /** @type {TaskArgs} */
+  var tasks;
+  /** @type {!TypeError} */
+  var error;
+  /** @type {Args} */
+  var args;
 
-taskDir = findTaskDir(BASE);
-args = slice(process.argv, 2);
+  if ( !is.str(cmd) ) {
+    error = new TypeError('invalid cmd param (must be a string) for act init');
+    log.error('Failed act command', error, { cmd: cmd });
+  }
 
-if ( showHelp(taskDir, args) || showVersion(args) ) return;
+  taskDir = findTaskDir(BASE);
+  cmd = cut(cmd, TRIM_START);
+  cmd = cut(cmd, TRIM_END);
+  args = cmd.split(' ');
 
-args = addShortcuts(taskDir, args);
-tasks = getTaskArgs(taskDir, args);
-runTasks(tasks);
+  if ( showHelp(taskDir, args) || showVersion(args) ) return;
+
+  args = addShortcuts(taskDir, args);
+  tasks = getTaskArgs(taskDir, args);
+  runTasks(tasks);
+}
