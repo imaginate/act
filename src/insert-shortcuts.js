@@ -21,6 +21,7 @@
 'use strict';
 
 var help = require('./helpers');
+var cut  = help.cut;
 var each = help.each;
 var fuse = help.fuse;
 var has  = help.has;
@@ -33,6 +34,10 @@ var has  = help.has;
 var METHOD = /^-/;
 /** @type {!RegExp} */
 var VALUE = /=$/;
+/** @type {!RegExp} */
+var TRIM_START = /^ *(?:act +)?/;
+/** @type {!RegExp} */
+var TRIM_END = / +$/;
 
 var findShortcuts = require('./find-shortcuts');
 
@@ -49,6 +54,8 @@ module.exports = function insertShortcuts(taskDir, args) {
   var newArgs;
   /** @type {!TypeError} */
   var error;
+  /** @type {string} */
+  var cmd;
 
   shortcuts = findShortcuts(taskDir);
 
@@ -66,7 +73,10 @@ module.exports = function insertShortcuts(taskDir, args) {
     }
 
     if ( has(shortcuts, arg) ) {
-      args = shortcuts[arg].split(' ');
+      cmd = shortcuts[arg];
+      cmd = cut(cmd, TRIM_START);
+      cmd = cut(cmd, TRIM_END);
+      args = cmd.split(' ');
       newArgs = fuse(newArgs, args);
     }
     else newArgs = fuse.val(newArgs, arg);
