@@ -250,7 +250,7 @@ function printHelpTask(task, len) {
   space = fill(len - result.length, ' ');
   result = fuse(fill(4, ' '), result, space, task.desc);
   if (task.default) {
-    result = fuse(result, ' ', '(default: "', task.default, '")');
+    result = fuse(result, ' ', '(default: ', task.default, ')');
   }
   result = fuse(result, '\n');
   if (task.methods) {
@@ -311,5 +311,5 @@ function printShortcut(name, cmd, len) {
   var space;
 
   space = fill(len - name.length, ' ');
-  return fuse('  ', name, space, '"', cmd, '"', '\n');
+  return fuse('  ', name, space, '', cmd, '', '\n');
 }
