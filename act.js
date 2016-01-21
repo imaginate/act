@@ -39,9 +39,9 @@ var TRIM_START = /^ *(?:act +)?/;
 /** @type {!RegExp} */
 var TRIM_END = / +$/;
 /** @type {!RegExp} */
-var NODE = /^["']?(?:.+\/)?node(?:.js)?["']?$/;
+var NODE = /^["']?(?:.+[\/\\])?node(?:.[a-z]+)?["']?$/;
 /** @type {!RegExp} */
-var ACT = /^["']?(?:.+\/)?act(?:.js)?["']?$/;
+var ACT = /^["']?(?:.+[\/\\])?act(?:.js)?["']?$/;
 
 var findTaskDir  = require('./src/find-task-dir');
 var showHelp     = require('./src/show-help');
