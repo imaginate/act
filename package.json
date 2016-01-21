@@ -15,6 +15,9 @@
   "bin": {
     "act": "bin/act.js"
   },
+  "scripts": {
+    "test": "node ./bin/act.js test"
+  },
   "homepage": "https://github.com/imaginate/act",
   "dependencies": {
     "node-are": "0.x",
