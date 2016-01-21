@@ -69,7 +69,7 @@ function updateAllVersion(version) {
 
   insertNPMVersion(version);
 
-  console.log('\n\u001b[42m Completed version.all task      \u001b[49m');
+  log.pass('Completed `version.all` task');
 }
 
 /**
@@ -82,7 +82,7 @@ function updateNPMVersion(version) {
 
   insertNPMVersion(version);
 
-  console.log('\n\u001b[42m Completed version.npm task      \u001b[49m');
+  log.pass('Completed `version.npm` task');
 }
 
 

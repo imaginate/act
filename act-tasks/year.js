@@ -57,7 +57,7 @@ function updateYear(year) {
   });
   insertYears('src', filepaths, year);
 
-  console.log('\n\u001b[42m Completed year task      \u001b[49m');
+  log.pass('Completed `year` task');
 }
 
 /**
