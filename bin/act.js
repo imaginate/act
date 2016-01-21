@@ -2,7 +2,7 @@
 
 /**
  * -----------------------------------------------------------------------------
- * ACT
+ * ACT COMMAND
  * -----------------------------------------------------------------------------
  * @version 0.0.1
  * @see [act]{@link https://github.com/imaginate/act}
@@ -22,34 +22,4 @@
 
 'use strict';
 
-// save reference to the base path
-var BASE = process.cwd();
-
-var slice = require('../src/helpers').slice;
-
-var findTaskDir  = require('../src/find-task-dir');
-var showHelp     = require('../src/show-help');
-var showVersion  = require('../src/show-version');
-var addShortcuts = require('../src/insert-shortcuts');
-var getTaskArgs  = require('../src/get-task-args');
-var runTasks     = require('../src/run-tasks');
-
-/**
- * @typedef {!Array<string>} Args
- */
-
-/** @type {string} */
-var taskDir;
-/** @type {TaskArgs} */
-var tasks;
-/** @type {Args} */
-var args;
-
-taskDir = findTaskDir(BASE);
-args = slice(process.argv, 2);
-
-if ( showHelp(taskDir, args) || showVersion(args) ) return;
-
-args = addShortcuts(taskDir, args);
-tasks = getTaskArgs(taskDir, args);
-runTasks(tasks);
+require('../act.js')(process.argv);
