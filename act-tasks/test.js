@@ -24,7 +24,7 @@ var cp = require('child_process');
 // globally append all of are, vitals, and log-ocd methods
 require('./_helpers');
 
-exports['desc'] = 'run the unit tests for act';
+exports['desc'] = 'run act unit tests';
 exports['method'] = runTests;
 
 /**
