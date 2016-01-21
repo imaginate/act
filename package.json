@@ -13,7 +13,7 @@
     "url": "https://github.com/imaginate/act/issues"
   },
   "bin": {
-    "act": "act.js"
+    "act": "bin/act.js"
   },
   "homepage": "https://github.com/imaginate/act",
   "dependencies": {
