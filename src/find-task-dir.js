@@ -37,6 +37,7 @@ module.exports = function findTaskDir(basepath) {
   /** @type {!Array<string>} */
   var dirs;
 
+  basepath = remap(basepath, /\\/g, '/');
   dirs = get.dirpaths(basepath, { validDirs: /^_?act-?tasks?$/ });
 
   if (!dirs.length) {
@@ -49,6 +50,5 @@ module.exports = function findTaskDir(basepath) {
     log.error('Failed act command', error);
   }
 
-  basepath = remap(basepath, '\\', '/');
   return fuse(basepath, '/', dirs[0], '/');
 };
