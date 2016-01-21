@@ -19,9 +19,8 @@
 
 'use strict';
 
-// globally append all of are and vitals methods
-require('node-are')();
-require('node-vitals')(2, 'all');
+// globally append all of are, vitals, and log-ocd methods
+require('./_helpers');
 
 exports['desc'] = 'updates year in entire repo';
 exports['value'] = '2xxx';

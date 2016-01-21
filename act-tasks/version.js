@@ -19,9 +19,8 @@
 
 'use strict';
 
-// globally append all of are and vitals methods
-require('node-are')();
-require('node-vitals')(2, 'all');
+// globally append all of are, vitals, and log-ocd methods
+require('./_helpers');
 
 
 var ERROR_MSG = 'invalid version (must be a semantic version) for act version task';
