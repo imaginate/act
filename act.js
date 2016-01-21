@@ -92,5 +92,4 @@ module.exports = function initAct(cmd) {
   args = addShortcuts(taskDir, args);
   tasks = getTaskArgs(taskDir, args);
   runTasks(tasks);
-  process.env.ACT_BASE = undefined;
 };
