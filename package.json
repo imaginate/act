@@ -21,6 +21,9 @@
     "node-vitals": "2.x",
     "log-ocd": ">1.0.0-beta"
   },
+  "devDependencies": {
+    "mocha": "2.x"
+  },
   "keywords": [
     "imaginate",
     "javascript build system",
