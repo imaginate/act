@@ -48,6 +48,10 @@ var METHOD = /^-/;
 var VALUE = /=$/;
 /** @type {!RegExp} */
 var VALID = /^[a-z]/;
+/** @type {!RegExp} */
+var START_SPACE = /^ +/;
+/** @type {!RegExp} */
+var END_SPACE = / +$/;
 
 /**
  * @param {string} taskDir
@@ -129,7 +133,7 @@ function getTaskArg(taskDir, args) {
 
   if (!args.length) {
     if ( !is._str(task.exports.default) ) return task;
-    args = getTaskDefaultArgs(task.exports.default);
+    args = getTaskDefaultArgs(name, task.exports.default);
   }
 
   return buildTaskArgMethods(task, args);
@@ -170,16 +174,25 @@ function getTaskExports(taskDir, name) {
 
 /**
  * @private
+ * @param {string} name
  * @param {string} defaultArgs
  * @return {Args}
  */
-function getTaskDefaultArgs(defaultArgs) {
+function getTaskDefaultArgs(name, defaultArgs) {
 
   /** @type {!ReferenceError} */
   var error;
   /** @type {Args} */
   var args;
 
+  // trim space and task from default args
+  defaultArgs = cut(defaultArgs, START_SPACE);
+  defaultArgs = cut(defaultArgs, END_SPACE);
+  name = fuse('^', name, ' +');
+  name = new RegExp(name);
+  defaultArgs = cut(defaultArgs, name);
+
+  // convert to Args array and check for errors
   args = defaultArgs.split(' ');
   each(args, function(arg, i, args) {
     if ( has(arg, METHOD) || ( i && has(args[--i], VALUE) ) ) return;
