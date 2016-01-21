@@ -83,9 +83,6 @@ module.exports = function initAct(cmd) {
   }
 
   taskDir = findTaskDir(BASE_DIR);
-  cmd = cut(cmd, TRIM_START);
-  cmd = cut(cmd, TRIM_END);
-  args = cmd.split(' ');
 
   if ( showHelp(taskDir, args) || showVersion(args) ) return;
 
