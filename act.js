@@ -21,12 +21,14 @@
 'use strict';
 
 // save reference to the base path
-var BASE = process.cwd();
+var BASE_DIR = process.cwd();
 
 var help = require('./src/helpers');
-var cut = help.cut;
-var is  = help.is;
-var log = help.log;
+var cut   = help.cut;
+var has   = help.has;
+var is    = help.is;
+var log   = help.log;
+var slice = help.slice;
 
 /**
  * @typedef {!Array<string>} Args
@@ -36,6 +38,10 @@ var log = help.log;
 var TRIM_START = /^ *(?:act +)?/;
 /** @type {!RegExp} */
 var TRIM_END = / +$/;
+/** @type {!RegExp} */
+var NODE = /^["']?(?:.+\/)?node["']?$/;
+/** @type {!RegExp} */
+var ACT = /^["']?(?:.+\/)?act["']?$/;
 
 var findTaskDir  = require('./src/find-task-dir');
 var showHelp     = require('./src/show-help');
@@ -46,7 +52,7 @@ var runTasks     = require('./src/run-tasks');
 
 /**
  * @public
- * @param {string} cmd
+ * @param {(string|!Array<string>)} cmd
  */
 module.exports = function initAct(cmd) {
 
@@ -59,12 +65,24 @@ module.exports = function initAct(cmd) {
   /** @type {Args} */
   var args;
 
-  if ( !is.str(cmd) ) {
-    error = new TypeError('invalid cmd param (must be a string) for act init');
+  if ( is.str(cmd) ) {
+    cmd = cut(cmd, TRIM_START);
+    cmd = cut(cmd, TRIM_END);
+    args = cmd.split(' ');
+  }
+  else if ( is('strings', cmd) ) {
+    args = has(cmd[0], NODE) && has(cmd[1], ACT)
+      ? slice(cmd, 2)
+      : has(cmd[0], ACT)
+        ? slice(cmd, 1)
+        : cmd;
+  }
+  else {
+    error = new TypeError('invalid cmd param (must be a string or an array of strings) for act init');
     log.error('Failed act command', error, { cmd: cmd });
   }
 
-  taskDir = findTaskDir(BASE);
+  taskDir = findTaskDir(BASE_DIR);
   cmd = cut(cmd, TRIM_START);
   cmd = cut(cmd, TRIM_END);
   args = cmd.split(' ');
@@ -74,4 +92,5 @@ module.exports = function initAct(cmd) {
   args = addShortcuts(taskDir, args);
   tasks = getTaskArgs(taskDir, args);
   runTasks(tasks);
+  process.env.ACT_BASE = undefined;
 };
