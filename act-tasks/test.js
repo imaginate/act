@@ -33,28 +33,32 @@ exports['method'] = runTests;
  */
 function runTests() {
 
-  /** @type {string} */
-  var result;
-  /** @type {string} */
-  var chunks;
+  /** @type {!ChildProcess} */
+  var child;
+  /** @type {!Array<string>} */
+  var args;
+  /** @type {!Object} */
+  var opts;
 
   logStart();
 
-  result = cp.spawn('node', [
-    './node_modules/mocha/bin/mocha',
+  args = [
+    './node_modules/mocha/bin/_mocha',
     '--colors',
-    '--require',
-    './test/_setup.js',
+    '--reporter',
+    'test/mocha-reporter.js',
     './test/tests.js'
-  ]);
-  chunks = '';
-  result.stdout.on('data', function(chunk) {
-    chunk = chunk.toString();
-    chunks = fuse(chunks, chunk);
-  });
-  result.stdout.on('close', function() {
-    chunks = cut(chunks, /^\n/);
-    console.log(chunks);
+  ];
+  opts = { 'stdio': 'inherit' };
+
+  try {
+    child = cp.spawn('node', args, opts);
+  }
+  catch (error) {
+    logFail(error);
+  }
+
+  child.on('close', function() {
     logEnd();
   });
 }
@@ -74,10 +78,23 @@ function logStart() {
  * @type {function}
  */
 function logEnd() {
-  log.pass.setFormat({
-    'linesBefore': 0,
-    'linesAfter':  0
-  });
+  log.pass.setFormat({ 'linesAfter': 0 });
   log.pass('Finished `act` tests');
   log.pass.resetFormat();
+}
+
+/**
+ * @private
+ * @param {!Error} error
+ */
+function logFail(error) {
+
+  /** @type {string} */
+  var header;
+  /** @type {string} */
+  var msg;
+
+  header = fuse('Internal: ', error.name || 'Error');
+  msg = error.message || '(no message)';
+  log.error(header, msg, error);
 }
