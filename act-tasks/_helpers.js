@@ -27,3 +27,9 @@ log.error.setConfig({
   'throw': false,
   'exit':  true
 });
+log.fail.setConfig({
+  'header': true,
+  'throw':  false,
+  'exit':   true,
+  'msg':    true
+});
