@@ -41,11 +41,11 @@ var Base = require('../node_modules/mocha/lib/reporters/base.js');
 Base.list = function(failures) {
 
   /** @type {number} */
-  var last;
+  var len;
 
   console.log(); // log empty line
 
-  last = failures.length - 1;
+  len = failures.length;
   each(failures, function(test, i) {
 
     /** @type {!Error} */
@@ -66,7 +66,7 @@ Base.list = function(failures) {
       error.stack = test.err.stack;
     }
 
-    if ( is.same(i, last) ) log.error.setFormat({ 'linesAfter': 0 });
+    if ( is.same(i, len) ) log.error.setFormat({ 'linesAfter': 0 });
 
     log.error(error);
   });
