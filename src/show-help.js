@@ -323,5 +323,5 @@ function printShortcut(name, cmd, len) {
   var space;
 
   space = fill(len - name.length, ' ');
-  return fuse('  ', name, space, '', cmd, '', '\n');
+  return fuse('    ', name, space, '', cmd, '', '\n');
 }
