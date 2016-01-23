@@ -40,7 +40,7 @@ module.exports = function runTasks(taskDir, args) {
   /** @type {(TaskArgs|boolean)} */
   var tasks;
 
-  args = insertShortcuts(args);
+  args = insertShortcuts(taskDir, args);
   tasks = args && getTaskArgs(taskDir, args);
   return tasks && roll(true, tasks, function(result, arg) {
     return arg
@@ -78,7 +78,7 @@ function runOnlyMethod(arg, result) {
   }
 
   try {
-    method(val);
+    method(arg.val);
   }
   catch (error) {
     title = fuse('Failed `', arg.name, '` task');
@@ -87,7 +87,7 @@ function runOnlyMethod(arg, result) {
   }
 
   title = fuse('Completed `', arg.name, '` task');
-  log.pass(title);
+  if (arg.exports.done !== false) log.pass(title);
   return result;
 }
 
@@ -166,6 +166,6 @@ function runMethod(arg, method, key, val, result) {
   }
 
   title = fuse('Completed `', arg.name, '.', key, '` task');
-  log.pass(title);
+  if (arg.exports.done !== false) log.pass(title);
   return result;
 }
