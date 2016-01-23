@@ -17,6 +17,8 @@
 
 'use strict';
 
+process.chdir('test');
+
 global.assert = require('assert');
 global.act = require('../act');
 
