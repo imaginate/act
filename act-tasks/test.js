@@ -25,6 +25,7 @@ var cp = require('child_process');
 require('./_helpers');
 
 exports['desc'] = 'run act unit tests';
+exports['done'] = false;
 exports['method'] = runTests;
 
 /**
