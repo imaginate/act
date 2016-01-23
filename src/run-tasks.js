@@ -21,59 +21,147 @@
 'use strict';
 
 var help = require('./helpers');
-var each = help.each;
+var fuse = help.fuse;
 var has  = help.has;
 var is   = help.is;
 var log  = help.log;
+var roll = help.roll;
+
+var insertShortcuts = require('./insert-shortcuts');
+var getTaskArgs = require('./get-task-args');
 
 /**
- * @param {TaskArgs} args
+ * @param {string} taskDir
+ * @param {Args} args
+ * @return {boolean}
  */
-module.exports = function runTasks(args) {
+module.exports = function runTasks(taskDir, args) {
+
+  /** @type {TaskArgs} */
+  var tasks;
+
+  args = insertShortcuts(args);
+  tasks = getTaskArgs(taskDir, args);
+  return tasks && roll(true, tasks, function(result, arg) {
+    return arg.methods ? runMethods(arg, result) : runOnlyMethod(arg, result);
+  });
+};
+
+/**
+ * @private
+ * @param {TaskArg} arg
+ * @param {boolean} result
+ * @return {boolean}
+ */
+function runOnlyMethod(arg, result) {
+
+  /** @type {!(Object|function)} */
+  var method;
+  /** @type {!TypeError} */
+  var error;
+  /** @type {string} */
+  var title;
+
+  method = is.func(arg.exports)
+    ? arg.exports
+    : arg.exports.method || arg.exports.methods;
+
+  if ( !is.func(method) ) {
+    title = fuse('Failed `', arg.name, '` task');
+    error = new TypeError('invalid `exports.method` (must be a function)');
+    log.error(title, error, { task: arg.exports });
+    return false;
+  }
+
+  try {
+    method(val);
+  }
+  catch (error) {
+    title = fuse('Failed `', arg.name, '` task');
+    log.error(title, error, { task: arg.exports });
+    return false;
+  }
+
+  title = fuse('Completed `', arg.name, '` task');
+  log.pass(title);
+  return result;
+}
+
+/**
+ * @private
+ * @param {TaskArg} arg
+ * @param {boolean} result
+ * @return {boolean}
+ */
+function runMethods(arg, result) {
 
   /** @type {!(Object|function)} */
   var methods;
-  /** @type {!(Object|function)} */
-  var method;
   /** @type {!(ReferenceError|TypeError)} */
   var error;
+  /** @type {string} */
+  var title;
 
-  each(args, function(arg) {
+  methods = arg.exports.methods;
 
-    methods = arg.exports;
+  if ( !is._obj(methods) ) {
+    title = fuse('Failed `', arg.name, '` task');
+    error = 'invalid `exports.methods` (must be an object/function)';
+    error = new TypeError(error);
+    log.error(title, error, { task: arg.exports });
+    return false;
+  }
 
-    if (!arg.methods) {
-      method = is.func(methods) ? methods : methods.method || methods.methods;
-      if ( !is.func(method) ) {
-        error = new TypeError('invalid act task exports.method (must be a function)');
-        log.error('Failed act command', error, { task: arg.exports });
-      }
-      return method(arg.value);
+  return roll(result, arg.methods, function(result, key, i) {
+
+    if ( !has(methods, key) ) {
+      title = fuse('Failed `', arg.name, '.', key, '` task');
+      error = new ReferenceError('method does not exist');
+      log.error(title, error, { task: arg.exports, method: key });
+      return false;
     }
 
-    methods = arg.exports.methods;
-
-    if ( !is._obj(methods) ) {
-      error = new TypeError('invalid act task exports.methods (must be an object/function)');
-      log.error('Failed act command', error, { task: arg.exports });
-    }
-
-    each(arg.methods, function(argMethod, i, argMethods) {
-
-      if ( !has(methods, argMethod) ) {
-        error = new ReferenceError('act task method does not exist');
-        log.error('Failed act command', error, { task: arg.exports, method: argMethod });
-      }
-
-      method = methods[argMethod];
-      if ( is.obj(method) ) method = method.method;
-
-      if ( !is.func(method) ) {
-        error = new TypeError('invalid act task exports.methods.<method>[.method] (must be a function)');
-        log.error('Failed act command', error, { task: arg.exports, method: argMethod });
-      }
-
-      method( arg.values[i] );
-    });
+    return runMethod(arg, methods[key], key, arg.values[i], result);
   });
-};
+}
+
+/**
+ * @private
+ * @param {TaskArg} arg
+ * @param {(!Object|function)} method
+ * @param {string} key
+ * @param {?string} val
+ * @param {boolean} result
+ * @return {boolean}
+ */
+function runMethod(arg, method, key, val, result) {
+
+  /** @type {!TypeError} */
+  var error;
+  /** @type {string} */
+  var title;
+
+  method = is.obj(method) ? method.method : method;
+
+  if ( !is.func(method) ) {
+    title = fuse('Failed `', arg.name, '.', key, '` task');
+    error = fuse('invalid `exports.methods.', key, '.method`');
+    error = fuse(error, ' (must be a function)');
+    error = new TypeError(error);
+    log.error(title, error, { task: arg.exports });
+    return false;
+  }
+
+  try {
+    method(val);
+  }
+  catch (error) {
+    title = fuse('Failed `', arg.name, '.', key, '` task');
+    log.error(title, error, { task: arg.exports });
+    return false;
+  }
+
+  title = fuse('Completed `', arg.name, '.', key, '` task');
+  log.pass(title);
+  return result;
+}
