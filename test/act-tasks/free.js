@@ -18,6 +18,7 @@
 'use strict';
 
 exports['desc'] = 'change your lens';
+exports['done'] = false; // turns off auto task completion logs
 exports['method'] = liveFree;
 
 /**
