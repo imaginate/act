@@ -17,18 +17,57 @@
 
 'use strict';
 
-describe('reporter tests', function() {
+describe('act tests', function() {
 
-  it('test pass', function() {
-    assert(true);
+  beforeEach(function() {
+    global.actOut = [];
   });
 
-  it('test assert fail', function() {
-    assert(false);
+  it('act free', function() {
+    act('free');
+    assert( actOut[0] === 'free' );
   });
 
-  it('test error thrown', function() {
-    throw new TypeError('test');
+  it('act real', function() {
+    act('real');
+    assert( actOut[0] === 'free' );
+  });
+
+  it('act only= live free', function() {
+    act('only= live free');
+    assert( actOut[0] === 'only' );
+    assert( actOut[1] === 'you'  );
+    assert( actOut[2] === 'live' );
+    assert( actOut[3] === 'free' );
+  });
+
+  it('act only -one= 1', function() {
+    act('only -one= 1');
+    assert( actOut[0] === 'only' );
+    assert( actOut[1] === 'one'  );
+    assert( actOut[2] ===  '1'   );
+  });
+
+  it('act only -one= 2 -you', function() {
+    act('only -one= 2 -you');
+    assert( actOut[0] === 'only' );
+    assert( actOut[1] === 'one'  );
+    assert( actOut[2] ===  '2'   );
+    assert( actOut[3] === 'only' );
+    assert( actOut[4] === 'you'  );
+  });
+
+  it('act only= 4 -you -one= 3 -one', function() {
+    act('only -one= 1 -you');
+    assert( actOut[0] === 'only' );
+    assert( actOut[1] === 'you'  );
+    assert( actOut[2] ===  '4'   );
+    assert( actOut[3] === 'only' );
+    assert( actOut[4] === 'one'  );
+    assert( actOut[5] ===  '3'   );
+    assert( actOut[6] === 'only' );
+    assert( actOut[7] === 'one'  );
+    assert( actOut[8] ===  '4'   );
   });
 
 });
