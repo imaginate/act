@@ -41,14 +41,14 @@ function runTests() {
   /** @type {!Object} */
   var opts;
 
-  log.debug('Starting `act` tests');
+  logocd.debug('Starting `act` tests');
 
   args = [
     './node_modules/mocha/bin/_mocha',
     '--colors',
     '--reporter',
     'test/mocha-reporter.js',
-    './test/tests.js'
+    './tests.js'
   ];
   opts = { 'stdio': 'inherit' };
 
@@ -57,10 +57,10 @@ function runTests() {
   }
   catch (error) {
     error.name = fuse('Internal ', error.name || 'Error');
-    log.error(error);
+    logocd.error(error);
   }
 
   child.on('close', function() {
-    log.pass('Finished `act` tests');
+    logocd.pass('Finished `act` tests');
   });
 }

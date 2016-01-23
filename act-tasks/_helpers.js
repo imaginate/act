@@ -20,14 +20,14 @@
 // globally append all of are, vitals, and log-ocd methods
 require('node-are')();
 require('node-vitals')(2, 'all');
-require('log-ocd')('log');
+require('log-ocd')('logocd');
 
 // setup log-ocd
-log.error.setConfig({
+logocd.error.setConfig({
   'throw': false,
   'exit':  true
 });
-log.fail.setConfig({
+logocd.fail.setConfig({
   'header': true,
   'throw':  false,
   'exit':   true,
