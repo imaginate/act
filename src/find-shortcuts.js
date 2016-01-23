@@ -39,7 +39,7 @@ var CONFIG = /^_?config(?:.json)?$/;
 
 /**
  * @param {string} taskDir
- * @return {?Shortcuts}
+ * @return {(?Shortcuts|boolean)}
  */
 module.exports = function getShortcuts(taskDir) {
 
@@ -71,8 +71,10 @@ module.exports = function getShortcuts(taskDir) {
     shortcuts = require(file) || null;
 
     if ( !is('stringMap', shortcuts) ) {
-      error = new TypeError('invalid act shortcuts.json (must be an object with string values)');
-      log.error('Failed act command', error, { shortcuts: shortcuts });
+      error = 'invalid `shortcuts.json` (must be an object with string values)';
+      error = new TypeError(error);
+      log.error('Failed `act` command', error, { shortcuts: shortcuts });
+      return false;
     }
 
     return shortcuts;
@@ -92,15 +94,22 @@ module.exports = function getShortcuts(taskDir) {
   if (!config) return null;
 
   if ( !is.obj(config) ) {
-    error = new TypeError('invalid act config.json (must be an object)');
-    log.error('Failed act command', error, { file: file, config: config });
+    error = new TypeError('invalid `config.json` (must be an object)');
+    log.error('Failed `act` command', error, { file: file, config: config });
+    return false;
   }
 
   shortcuts = get(config, SHORTCUTS)[0] || null;
 
   if ( !is('stringMap', shortcuts) ) {
-    error = new TypeError('invalid shortcuts prop in act config.json (must be an object with string values)');
-    log.error('Failed act command', error, { config: config, shortcuts: shortcuts });
+    error = 'invalid `shortcuts` property in `config.json`';
+    error = fuse(error, ' (must be an object with string values)');
+    error = new TypeError(error);
+    log.error('Failed `act` command', error, {
+      shortcuts: shortcuts,
+      config:    config
+    });
+    return false;
   }
 
   return shortcuts;
