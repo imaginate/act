@@ -18,17 +18,35 @@
 'use strict';
 
 global.assert = require('assert');
+global.act = require('../act');
 
 // globally append all of are, vitals, and log-ocd methods
 require('node-are')();
 require('node-vitals')(2, 'all');
 require('log-ocd')('log');
 
-// setup log-ocd
 log.error.setConfig({
   'logger': logError,
   'throw':  false,
   'exit':   false
+});
+log.error.setFormat({
+  'linesAfter': 2
+});
+
+log.fail.setFormat({
+  'linesAfter': 0,
+  'header': {
+    'spaceBefore': 0,
+    'spaceAfter':  0,
+    'accentMark': ''
+  }
+});
+log.fail.setStyle({
+  'header': {
+    'color': 'red',
+    'bg': ''
+  }
 });
 
 /**
@@ -36,6 +54,6 @@ log.error.setConfig({
  */
 function logError(result) {
   result = remap(result, /\n/g, '\n    ');
-  result = remap(result, /^\n  /, '\n');
+  result = fuse('  ', result);
   console.log(result);
 }
