@@ -58,7 +58,7 @@ describe('act tests', function() {
   });
 
   it('act only= 4 -you -one= 3 -one', function() {
-    act('only -one= 1 -you');
+    act('only= 4 -you -one= 3 -one');
     assert( actOut[0] === 'only' );
     assert( actOut[1] === 'you'  );
     assert( actOut[2] ===  '4'   );
