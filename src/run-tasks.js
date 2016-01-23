@@ -37,13 +37,17 @@ var getTaskArgs = require('./get-task-args');
  */
 module.exports = function runTasks(taskDir, args) {
 
-  /** @type {TaskArgs} */
+  /** @type {(TaskArgs|boolean)} */
   var tasks;
 
   args = insertShortcuts(args);
-  tasks = getTaskArgs(taskDir, args);
+  tasks = args && getTaskArgs(taskDir, args);
   return tasks && roll(true, tasks, function(result, arg) {
-    return arg.methods ? runMethods(arg, result) : runOnlyMethod(arg, result);
+    return arg
+      ? arg.methods
+        ? runMethods(arg, result)
+        : runOnlyMethod(arg, result)
+      : false;
   });
 };
 
