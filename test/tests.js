@@ -70,4 +70,17 @@ describe('act tests', function() {
     assert( actOut[8] ===  '4'   );
   });
 
+  it('act upit', function() {
+    act('upit');
+    assert( actOut[0] === 'only' );
+    assert( actOut[1] === 'you'  );
+    assert( actOut[2] ===  '4'   );
+    assert( actOut[3] === 'only' );
+    assert( actOut[4] === 'one'  );
+    assert( actOut[5] ===  '3'   );
+    assert( actOut[6] === 'only' );
+    assert( actOut[7] === 'one'  );
+    assert( actOut[8] ===  '4'   );
+  });
+
 });
