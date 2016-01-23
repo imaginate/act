@@ -68,8 +68,6 @@ function updateAllVersion(version) {
   });
 
   insertNPMVersion(version);
-
-  log.pass('Completed `version.all` task');
 }
 
 /**
@@ -81,8 +79,6 @@ function updateNPMVersion(version) {
   if ( !isSemVersion(version, true) ) throw new Error(ERROR_MSG);
 
   insertNPMVersion(version);
-
-  log.pass('Completed `version.npm` task');
 }
 
 
