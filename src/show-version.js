@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------------
  * ACT: SHOW-VERSION
  * -----------------------------------------------------------------------------
- * @version 0.0.1
+ * @version 1.0.0
  * @see [act]{@link https://github.com/imaginate/act}
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
@@ -25,7 +25,7 @@ var has = require('./helpers').has;
 /** @type {!RegExp} */
 var VERSION = /^-+v(?:ersion)?$/;
 /** @type {string} */
-var CURRENT = 'v0.0.1';
+var CURRENT = 'v1.0.0';
 
 /**
  * @param {Args} args
