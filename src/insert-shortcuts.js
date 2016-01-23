@@ -25,6 +25,7 @@ var cut  = help.cut;
 var each = help.each;
 var fuse = help.fuse;
 var has  = help.has;
+var is   = help.is;
 
 /**
  * @typedef {Object<string, string>} Shortcuts
@@ -44,7 +45,7 @@ var findShortcuts = require('./find-shortcuts');
 /**
  * @param {string} taskDir
  * @param {Args} args
- * @return {Args}
+ * @return {(Args|boolean)}
  */
 module.exports = function insertShortcuts(taskDir, args) {
 
@@ -59,7 +60,7 @@ module.exports = function insertShortcuts(taskDir, args) {
 
   shortcuts = findShortcuts(taskDir);
 
-  if (!shortcuts) return args;
+  if (!shortcuts) return is.null(shortcuts) ? args : false;
 
   newArgs = [];
   each(args, function(arg, i, args) {
