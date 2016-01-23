@@ -46,31 +46,28 @@ var ACT = /^["']?(?:.+[\/\\])?act(?:.js)?["']?$/;
 var findTaskDir  = require('./src/find-task-dir');
 var showHelp     = require('./src/show-help');
 var showVersion  = require('./src/show-version');
-var addShortcuts = require('./src/insert-shortcuts');
-var getTaskArgs  = require('./src/get-task-args');
 var runTasks     = require('./src/run-tasks');
 
 /**
  * @public
  * @param {(string|!Array<string>)} cmd
+ * @return {boolean}
  */
 module.exports = function initAct(cmd) {
 
-  /** @type {string} */
-  var taskDir;
-  /** @type {TaskArgs} */
-  var tasks;
   /** @type {!TypeError} */
   var error;
   /** @type {Args} */
   var args;
+  /** @type {string} */
+  var dir;
 
   if ( is.str(cmd) ) {
     cmd = cut(cmd, TRIM_START);
     cmd = cut(cmd, TRIM_END);
     args = cmd.split(' ');
   }
-  else if ( is('strings', cmd) ) {
+  else if ( is('!strings', cmd) ) {
     args = has(cmd[0], NODE) && has(cmd[1], ACT)
       ? slice(cmd, 2)
       : has(cmd[0], ACT)
@@ -78,15 +75,15 @@ module.exports = function initAct(cmd) {
         : cmd;
   }
   else {
-    error = new TypeError('invalid cmd param (must be a string or an array of strings) for act init');
-    log.error('Failed act command', error, { cmd: cmd });
+    error = 'invalid `cmd` param (must be a string or an array of strings)';
+    error = new TypeError(error);
+    log.error('Failed `act` command', error, { cmd: cmd });
+    return false;
   }
 
-  taskDir = findTaskDir(BASE_DIR);
+  dir = findTaskDir(BASE_DIR);
 
-  if ( showHelp(taskDir, args) || showVersion(args) ) return;
+  if (!dir) return false;
 
-  args = addShortcuts(taskDir, args);
-  tasks = getTaskArgs(taskDir, args);
-  runTasks(tasks);
+  return showHelp(dir, args) || showVersion(args) || runTasks(dir, args);
 };
