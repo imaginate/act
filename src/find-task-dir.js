@@ -41,13 +41,15 @@ module.exports = function findTaskDir(basepath) {
   dirs = get.dirpaths(basepath, { validDirs: /^_?act-?tasks?$/ });
 
   if (!dirs.length) {
-    error = new Error('no valid act task directory found');
-    log.error('Failed act command', error);
+    error = new Error('no valid `act-task` directory found');
+    log.error('Failed `act` command', error);
+    return '';
   }
 
   if (dirs.length > 1) {
-    error = new Error('multiple act task directories found');
-    log.error('Failed act command', error);
+    error = new Error('multiple `act-task` directories found');
+    log.error('Failed `act` command', error);
+    return '';
   }
 
   return fuse(basepath, '/', dirs[0], '/');
