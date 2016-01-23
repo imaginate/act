@@ -33,7 +33,7 @@ var remap = help.remap;
 var roll  = help.roll;
 
 /**
- * @typedef {!{
+ * @typedef {?{
  *   name: string,
  *   desc: string,
  *   val:  string
@@ -41,7 +41,7 @@ var roll  = help.roll;
  *
  * @typedef {?Array<HelpMethod>} HelpMethods
  *
- * @typedef {!{
+ * @typedef {?{
  *   name:    string,
  *   desc:    string,
  *   val:     string,
@@ -51,9 +51,6 @@ var roll  = help.roll;
  *
  * @typedef {!Array<HelpTask>} HelpTasks
  */
-
-/** @type {!RegExp} */
-var HELP = /^\?|-+h(?:elp)?$/;
 
 var findShortcuts = require('./find-shortcuts');
 
@@ -68,12 +65,10 @@ module.exports = function showHelp(taskDir, args) {
   var shortcuts;
   /** @type {string} */
   var result;
-  /** @type {HelpTasks} */
+  /** @type {?HelpTasks} */
   var tasks;
   /** @type {number} */
   var len;
-
-  if ( args.length && !has(args[0], HELP) ) return false;
 
   result = '\n';
   result = fuse(result, '  usage: act <task> [...<-method>]\n\n');
@@ -86,7 +81,7 @@ module.exports = function showHelp(taskDir, args) {
   tasks = getHelpTasks(taskDir);
   len = getHelpTasksLen(tasks);
   result = roll.up(result, tasks, function(task) {
-    return printHelpTask(task, len);
+    return task ? printHelpTask(task, len) : '';
   });
 
   shortcuts = findShortcuts(taskDir);
@@ -97,10 +92,15 @@ module.exports = function showHelp(taskDir, args) {
       return printShortcut(name, cmd, len);
     });
   }
+  else if ( !is.null(shortcuts) ) tasks = null;
 
   console.log(result);
 
-  return true;
+  return !!tasks && !until(true, tasks, function(task) {
+    return task && task.methods
+      ? until(null, task.methods, function(method) { return method; })
+      : !task;
+  });
 };
 
 ////// GET HELP TASKS
@@ -134,6 +134,8 @@ function getHelpTask(taskDir, task) {
   /** @type {!TypeError} */
   var error;
   /** @type {string} */
+  var title;
+  /** @type {string} */
   var name;
 
   name = cut(task, /.js$/);
@@ -141,8 +143,10 @@ function getHelpTask(taskDir, task) {
   task = require(task);
 
   if ( !is._obj(task) ) {
-    error = new TypeError('invalid act task exports (must be an object/function)');
-    log.error('Failed act command', error, { task: name, exported: task });
+    title = fuse('Failed `', name, '` task');
+    error = new TypeError('invalid `exports` (must be an object/function)');
+    log.error(title, error, { task: task });
+    return null;
   }
 
   return {
@@ -150,7 +154,7 @@ function getHelpTask(taskDir, task) {
     desc:    get(task, /^desc/)[0] || '',
     val:     get(task, /^val/)[0]  || '',
     default: task.default || '',
-    methods: getHelpMethods(task.methods)
+    methods: getHelpMethods(task.methods, name)
   };
 }
 
@@ -174,9 +178,10 @@ function getHelpTasksLen(tasks) {
 /**
  * @private
  * @param {(!Object|undefined)} methods
+ * @param {string} taskName
  * @return {HelpMethods}
  */
-function getHelpMethods(methods) {
+function getHelpMethods(methods, taskName) {
 
   /** @type {HelpMethods} */
   var result;
@@ -195,16 +200,22 @@ function getHelpMethods(methods) {
  * @private
  * @param {string} name
  * @param {!Object} method
+ * @param {string} taskName
  * @return {HelpMethod}
  */
-function getHelpMethod(name, method) {
+function getHelpMethod(name, method, taskName) {
 
   /** @type {!TypeError} */
   var error;
+  /** @type {string} */
+  var title;
 
   if ( !is._obj(method) || ( !is.func(method) && !is.func(method.method) ) ) {
-    error = new TypeError('invalid act task method');
-    log.error('Failed act command', error, { method: name, value: method });
+    title = fuse('Failed `', taskName, '` task');
+    error = fuse('invalid method, `', name, '`, (must be a function)');
+    error = new TypeError(error);
+    log.error(title, error, { method: method });
+    return null;
   }
 
   return {
