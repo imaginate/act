@@ -44,6 +44,7 @@ var NODE = /^["']?(?:.+[\/\\])?node(?:.[a-z]+)?["']?$/;
 var ACT = /^["']?(?:.+[\/\\])?act(?:.js)?["']?$/;
 
 var findTaskDir  = require('./src/find-task-dir');
+var isHelp       = require('./src/is-help');
 var showHelp     = require('./src/show-help');
 var showVersion  = require('./src/show-version');
 var runTasks     = require('./src/run-tasks');
@@ -82,8 +83,9 @@ module.exports = function initAct(cmd) {
   }
 
   dir = findTaskDir(BASE_DIR);
-
-  if (!dir) return false;
-
-  return showHelp(dir, args) || showVersion(args) || runTasks(dir, args);
+  return dir
+    ? isHelp(args)
+      ? showHelp(dir, args)
+      : showVersion(args) || runTasks(dir, args)
+    : false;
 };
