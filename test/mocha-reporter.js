@@ -20,6 +20,17 @@
 // globally append all helpers
 require('./setup.js');
 
+// get the Runnable constructor
+var Runnable = require('../node_modules/mocha/lib/runnable.js');
+
+/**
+ * Replace the fullTitle method with a different separator.
+ * @return {string}
+ */
+Runnable.prototype.fullTitle = function() {
+  return this.parent.fullTitle() + ' -> ' + this.title;
+};
+
 // get the reporter base
 var Base = require('../node_modules/mocha/lib/reporters/base.js');
 
@@ -41,12 +52,12 @@ Base.list = function(failures) {
     var error;
     /** @type {string} */
     var title;
-    /** @type {string} */
-    var msg;
+
+    title = test.fullTitle();
+    title = fuse('  ', ++i, ') ', title);
+    log.fail(title);
 
     error = test.err;
-    title = fuse(String(++i), ') ', error.name);
-    msg = error.message || '(no message)';
 
     if ( !is.error(error) ) {
       error = new Error();
@@ -57,7 +68,7 @@ Base.list = function(failures) {
 
     if ( is.same(i, last) ) log.error.setFormat({ 'linesAfter': 0 });
 
-    log.error(title, msg, error);
+    log.error(error);
   });
 };
 
@@ -67,13 +78,13 @@ Base.list = function(failures) {
  * -----------------------------------------------------------------------------
  * The below code is copied and pasted from the Mocha module located at
  *   mocha/lib/reporters/spec.js with only two changes - the inherits path has
- *   been updated for this repo's cwd and the runner's start event has been
- *   removed.
+ *   been updated and the runner's start event has been removed.
+ *
  * @see [Mocha]{@link https://github.com/mochajs/mocha}
  * @copyright 2011-2016 TJ Holowaychuk <tj@vision-media.ca>
  */
 
-var inherits = require('../node_modules/mocha/lib/utils.js').inherits;
+var inherits = require('util').inherits;
 var color = Base.color;
 var cursor = Base.cursor;
 
