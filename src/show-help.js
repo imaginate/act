@@ -31,6 +31,7 @@ var is    = help.is;
 var log   = help.log;
 var remap = help.remap;
 var roll  = help.roll;
+var until = help.until;
 
 /**
  * @typedef {?{
