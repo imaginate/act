@@ -40,7 +40,7 @@ function runTests() {
   /** @type {!Object} */
   var opts;
 
-  logStart();
+  log.debug('Starting `act` tests');
 
   args = [
     './node_modules/mocha/bin/_mocha',
@@ -55,46 +55,11 @@ function runTests() {
     child = cp.spawn('node', args, opts);
   }
   catch (error) {
-    logFail(error);
+    error.name = fuse('Internal ', error.name || 'Error');
+    log.error(error);
   }
 
   child.on('close', function() {
-    logEnd();
+    log.pass('Finished `act` tests');
   });
-}
-
-/**
- * @private
- * @type {function}
- */
-function logStart() {
-  log.debug.setFormat({ 'linesAfter': 0 });
-  log.debug('Starting `act` tests');
-  log.debug.resetFormat();
-}
-
-/**
- * @private
- * @type {function}
- */
-function logEnd() {
-  log.pass.setFormat({ 'linesAfter': 0 });
-  log.pass('Finished `act` tests');
-  log.pass.resetFormat();
-}
-
-/**
- * @private
- * @param {!Error} error
- */
-function logFail(error) {
-
-  /** @type {string} */
-  var header;
-  /** @type {string} */
-  var msg;
-
-  header = fuse('Internal: ', error.name || 'Error');
-  msg = error.message || '(no message)';
-  log.error(header, msg, error);
 }
