@@ -51,4 +51,7 @@ log.error.setConfig({
   'throw': false,
   'exit':  true
 });
+log.pass.setFormat({
+  'linesAfter': 0
+});
 exports.log = log;
