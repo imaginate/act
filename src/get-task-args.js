@@ -22,16 +22,16 @@
 
 var help = require('./helpers');
 var cut   = help.cut;
-var each  = help.each;
 var fuse  = help.fuse;
 var has   = help.has;
 var is    = help.is;
 var log   = help.log;
 var roll  = help.roll;
 var slice = help.slice;
+var until = help.until;
 
 /**
- * @typedef {!{
+ * @typedef {?{
  *   task:    (!Object|function),
  *   name:    string,
  *   value:   ?string,
@@ -111,8 +111,9 @@ function getTaskArg(taskDir, args) {
   name = cut(args[0], VALUE);
 
   if ( !has(name, VALID) ) {
-    error = new ReferenceError('invalid act task name (must start with a letter)');
-    log.error('Failed act command', error, { task: name });
+    error = new ReferenceError('invalid task name (must start with a letter)');
+    log.error('Failed `act` command', error, { task: name });
+    return null;
   }
 
   task = {
@@ -122,6 +123,8 @@ function getTaskArg(taskDir, args) {
     values:  null,
     exports: getTaskExports(taskDir, name)
   };
+
+  if (!task.exports) return null;
 
   if ( has(args[0], VALUE) ) {
     task.value = args[1];
@@ -136,20 +139,22 @@ function getTaskArg(taskDir, args) {
     args = getTaskDefaultArgs(name, task.exports.default);
   }
 
-  return buildTaskArgMethods(task, args);
+  return args && buildTaskArgMethods(task, args);
 }
 
 /**
  * @private
  * @param {string} taskDir
  * @param {string} name
- * @return {!(Object|function)}
+ * @return {(?Object|function)}
  */
 function getTaskExports(taskDir, name) {
 
-  /** @type {!(ReferenceError|TypeError)} */
+  /** @type {(!ReferenceError|TypeError)} */
   var error;
-  /** @type {!(Object|function)} */
+  /** @type {string} */
+  var title;
+  /** @type {(!Object|function)} */
   var task;
   /** @type {string} */
   var file;
@@ -157,15 +162,18 @@ function getTaskExports(taskDir, name) {
   file = fuse(taskDir, name, '.js');
 
   if ( !is.file(file) ) {
-    error = new ReferenceError('act task does not exist');
-    log.error('Failed act command', error, { task: file });
+    error = new ReferenceError('task does not exist');
+    log.error('Failed `act` command', error, { task: file });
+    return null;
   }
 
   task = require(file);
 
   if ( !is._obj(task) ) {
-    error = new TypeError('invalid act task exports (must be an object/function)');
-    log.error('Failed act command', error, { task: name, exports: task });
+    title = fuse('Failed `', name, '` task');
+    error = new TypeError('invalid `exports` (must be an object/function)');
+    log.error(title, error, { exports: task });
+    return null;
   }
 
   task.name = name;
@@ -176,30 +184,41 @@ function getTaskExports(taskDir, name) {
  * @private
  * @param {string} name
  * @param {string} defaultArgs
- * @return {Args}
+ * @return {?Args}
  */
 function getTaskDefaultArgs(name, defaultArgs) {
 
   /** @type {!ReferenceError} */
   var error;
+  /** @type {!RegExp} */
+  var regex;
+  /** @type {string} */
+  var title;
+  /** @type {boolean} */
+  var fail;
   /** @type {Args} */
   var args;
 
   // trim space and task from default args
   defaultArgs = cut(defaultArgs, START_SPACE);
   defaultArgs = cut(defaultArgs, END_SPACE);
-  name = fuse('^', name, ' +');
-  name = new RegExp(name);
-  defaultArgs = cut(defaultArgs, name);
+  regex = fuse('^', name, ' +');
+  regex = new RegExp(regex);
+  defaultArgs = cut(defaultArgs, regex);
 
   // convert to Args array and check for errors
   args = defaultArgs.split(' ');
-  each(args, function(arg, i, args) {
-    if ( has(arg, METHOD) || ( i && has(args[--i], VALUE) ) ) return;
-    error = new ReferenceError('invalid arg in act task exports.default');
-    log.error('Failed act command', error, { default: defaultArgs, arg: arg });
+  fail = until(false, args, function(arg, i, args) {
+
+    if ( has(arg, METHOD) || ( i && has(args[--i], VALUE) ) ) return true;
+
+    title = fuse('Failed `', name, '` task');
+    error = 'invalid `exports.default` (must be a valid command string)';
+    error = new ReferenceError(error);
+    log.error(title, error, { defaultArgs: defaultArgs, invalidArg: arg });
+    return false;
   });
-  return args;
+  return fail ? null : args;
 }
 
 /**
