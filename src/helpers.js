@@ -55,3 +55,25 @@ log.pass.setFormat({
   'linesAfter': 0
 });
 exports.log = log;
+
+/** @type {!RegExp} */
+var HELP = /^\?|-+h(?:elp)?$/;
+
+/**
+ * @param {Args} args
+ * @return {boolean}
+ */
+exports.is.help = function isHelp(args) {
+  return !args.length || has(args[0], HELP);
+};
+
+/** @type {!RegExp} */
+var VERSION = /^-+v(?:ersion)?$/;
+
+/**
+ * @param {Args} args
+ * @return {boolean}
+ */
+exports.is.version = function isVersion(args) {
+  return has(args[0], VERSION);
+};
