@@ -33,7 +33,7 @@ var until = help.until;
  */
 
 /** @type {!RegExp} */
-var CONFIG = /^_?config(?:.json)?$/;
+var CONFIG = /^_?config.json$/;
 
 /**
  * @param {string} taskDir
@@ -61,6 +61,8 @@ module.exports = function findConfig(taskDir) {
     return true;
   });
 
+  if (!file) return null;
+
   file = fuse(taskDir, file);
   try {
     config = require(file);
@@ -70,9 +72,7 @@ module.exports = function findConfig(taskDir) {
     return false;
   }
 
-  if (!config) return null;
-
-  if ( !is.obj(config) ) {
+  if ( !is('obj', config) ) {
     error = new TypeError('invalid `config.json` (must be an object)');
     log.error('Failed `act` command', error, { file: file, config: config });
     return false;
