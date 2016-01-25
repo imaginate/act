@@ -63,11 +63,21 @@ All task scripts must export an object or function with the below properties.
 | value (optional)       | string   | val          | If the method accepts a value this string should be a one-word description for it.                                      |
 | method                 | function |              | The action for the method. If the [Method](#method) is a function (instead of an object) this property is not required. |
 
-## Shortcuts
-You may create task shortcuts by adding ``` shortcuts.json ``` to the **_act-tasks_** directory. It should consist of an object with ``` shortcut-name => shortcut-command ``` pairs.
+## Config
+To change the **_act_** config just add ``` config.json ``` to your **_act-tasks_** directory with your desired settings.
+
+#### Shortcuts
+You may create task aliases by adding an ``` alias ``` property to your ``` config.json ```. The ``` alias ``` property's value should be an object with ``` name => command ``` pairs.
+
+#### Example
 ```json
 {
-  "name": "task -method task= value -method"
+  "alias": {
+    "name": "task -method task= value -method"
+  },
+  "throw": false,
+  "exit": true,
+  "done": true
 }
 ```
 
