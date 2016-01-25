@@ -1,8 +1,8 @@
 /**
  * -----------------------------------------------------------------------------
- * ACT TASK: version
+ * LOCAL ACT TASK: version
  * -----------------------------------------------------------------------------
- * @file Use `$ node act version` to access this file.
+ * @file Use `$ node bin/act version` to access this file.
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
  * @copyright 2016 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
@@ -19,15 +19,19 @@
 
 'use strict';
 
-// globally append all of are, vitals, and log-ocd methods
-require('./_helpers');
+var vitals = require('node-vitals')('base', 'fs');
+var each   = vitals.each;
+var fuse   = vitals.fuse;
+var get    = vitals.get;
+var has    = vitals.has;
+var remap  = vitals.remap;
+var to     = vitals.to;
 
-
-var ERROR_MSG = 'invalid version (must be a semantic version) for act version task';
+var ERROR_MSG = 'invalid value (must be a semantic version)';
 var BASE_SEMANTIC = /^[0-9]+\.[0-9]+\.[0-9]+$/;
-var PRE_SEMANTIC = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+.?[0-9]*)?$/;
-var BASE_VERSION = /\b(v?)[0-9]+\.[0-9]+\.[0-9]+\b/g;
-var NPM_VERSION = /("version": ")[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+.?[0-9]*)?/;
+var PRE_SEMANTIC  = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+.?[0-9]*)?$/;
+var BASE_VERSION  = /\b(v?)[0-9]+\.[0-9]+\.[0-9]+\b/g;
+var NPM_VERSION   = /("version": ")[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+.?[0-9]*)?/;
 
 
 exports['desc'] = 'updates version for the repo';
@@ -98,7 +102,7 @@ function isSemVersion(version, includePre) {
   var semantic;
 
   semantic = includePre ? PRE_SEMANTIC : BASE_SEMANTIC;
-  return is._str(version) && has(version, semantic);
+  return !!version && has(version, semantic);
 }
 
 /**
