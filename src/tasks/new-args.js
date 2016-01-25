@@ -1,6 +1,6 @@
 /**
  * -----------------------------------------------------------------------------
- * ACT: GET-TASK-ARGS
+ * ACT: NEW-TASK-ARGS
  * -----------------------------------------------------------------------------
  * @version 1.0.1
  * @see [act]{@link https://github.com/imaginate/act}
@@ -20,7 +20,7 @@
 
 'use strict';
 
-var help = require('./helpers');
+var help = require('../helpers');
 var cut   = help.cut;
 var fuse  = help.fuse;
 var has   = help.has;
@@ -58,7 +58,7 @@ var END_SPACE = / +$/;
  * @param {Args} args
  * @return {TaskArgs}
  */
-module.exports = function getTaskArgs(taskDir, args) {
+module.exports = function newTaskArgs(taskDir, args) {
 
   /** @type {TaskArgs} */
   var tasks;

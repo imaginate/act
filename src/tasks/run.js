@@ -20,22 +20,23 @@
 
 'use strict';
 
-var help = require('./helpers');
+var help = require('../helpers');
 var fuse = help.fuse;
 var has  = help.has;
 var is   = help.is;
 var log  = help.log;
 var roll = help.roll;
 
-var insertShortcuts = require('./insert-shortcuts');
-var getTaskArgs = require('./get-task-args');
+var insertAlias = require('../alias/insert');
+var newTaskArgs = require('./new-args');
 
 /**
  * @param {string} taskDir
+ * @param {Config} config
  * @param {Args} args
  * @return {boolean}
  */
-module.exports = function runTasks(taskDir, args) {
+module.exports = function runTasks(taskDir, config, args) {
 
   /** @type {(TaskArgs|boolean)} */
   var tasks;
