@@ -80,14 +80,14 @@ module.exports = function newTaskArgs(taskDir, args) {
     // - save the prior task's args and
     // - return the new start index
     args = slice(args, start, i);
-    task = getTaskArg(taskDir, args);
+    task = newTaskArg(taskDir, args);
     fuse.val(tasks, task);
     return i;
   });
 
   // save the last task's args
   args = slice(args, last);
-  task = getTaskArg(taskDir, args);
+  task = newTaskArg(taskDir, args);
   fuse.val(tasks, task);
 
   return tasks;
@@ -99,7 +99,7 @@ module.exports = function newTaskArgs(taskDir, args) {
  * @param {Args} args
  * @return {TaskArg}
  */
-function getTaskArg(taskDir, args) {
+function newTaskArg(taskDir, args) {
 
   /** @type {!ReferenceError} */
   var error;
@@ -167,7 +167,14 @@ function getTaskExports(taskDir, name) {
     return null;
   }
 
-  task = require(file);
+  try {
+    task = require(file);
+  }
+  catch (error) {
+    title = fuse('Failed `', name, '` task');
+    log.error(title, error, { file: file });
+    return null;
+  }
 
   if ( !is._obj(task) ) {
     title = fuse('Failed `', name, '` task');
