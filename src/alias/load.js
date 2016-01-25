@@ -32,14 +32,14 @@ var log = help.log;
 /** @type {!RegExp} */
 var ALIAS = /^shortcuts?|alias$/;
 
-var findAlias = require('./find-alias');
+var findAlias = require('./find');
 
 /**
  * @param {string} taskDir
  * @param {!Config} config
  * @return {(?Alias|boolean)}
  */
-module.exports = function findAlias(taskDir, config) {
+module.exports = function loadAlias(taskDir, config) {
 
   /** @type {?Alias} */
   var alias;

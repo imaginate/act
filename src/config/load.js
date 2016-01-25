@@ -27,10 +27,10 @@ var is = require('../helpers').is;
  */
 
 /** @type {!Config} */
-var DEFAULTS = require('./config-defaults');
+var DEFAULTS = require('./defaults');
 
-var findConfig = require('./find-config');
-var loadAlias  = require('./load-alias');
+var findConfig = require('./find');
+var loadAlias  = require('../alias/load');
 
 /**
  * @param {string} taskDir
