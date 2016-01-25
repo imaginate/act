@@ -20,7 +20,7 @@
 
 'use strict';
 
-var is = require('./helpers').is;
+var is = require('../helpers').is;
 
 /**
  * @typedef {Object<string, string>} Config
