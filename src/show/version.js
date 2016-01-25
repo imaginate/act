@@ -20,22 +20,14 @@
 
 'use strict';
 
-var has = require('../helpers').has;
-
-/** @type {!RegExp} */
-var VERSION = /^-+v(?:ersion)?$/;
 /** @type {string} */
-var CURRENT = 'v1.0.1';
+var VERSION = 'v1.0.1';
 
 /**
  * @param {Args} args
  * @return {boolean}
  */
 module.exports = function showVersion(args) {
-
-  if ( !has(args[0], VERSION) ) return false;
-
-  console.log('\n', CURRENT);
-
+  console.log('\n', VERSION);
   return true;
 };
