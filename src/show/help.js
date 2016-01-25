@@ -20,7 +20,7 @@
 
 'use strict';
 
-var help = require('./helpers');
+var help = require('../helpers');
 var cut   = help.cut;
 var each  = help.each;
 var fill  = help.fill;
@@ -53,7 +53,7 @@ var until = help.until;
  * @typedef {!Array<HelpTask>} HelpTasks
  */
 
-var findShortcuts = require('./find-shortcuts');
+var findShortcuts = require('../alias/find');
 
 /**
  * @param {string} taskDir

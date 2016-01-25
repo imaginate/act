@@ -20,7 +20,7 @@
 
 'use strict';
 
-var has = require('./helpers').has;
+var has = require('../helpers').has;
 
 /** @type {!RegExp} */
 var VERSION = /^-+v(?:ersion)?$/;
