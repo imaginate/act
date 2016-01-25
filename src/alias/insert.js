@@ -1,6 +1,6 @@
 /**
  * -----------------------------------------------------------------------------
- * ACT: INSERT-SHORTCUTS
+ * ACT: INSERT-ALIAS
  * -----------------------------------------------------------------------------
  * @version 1.0.1
  * @see [act]{@link https://github.com/imaginate/act}
@@ -20,7 +20,7 @@
 
 'use strict';
 
-var help = require('./helpers');
+var help = require('../helpers');
 var cut  = help.cut;
 var each = help.each;
 var fuse = help.fuse;
@@ -28,7 +28,7 @@ var has  = help.has;
 var is   = help.is;
 
 /**
- * @typedef {Object<string, string>} Shortcuts
+ * @typedef {Object<string, string>} Alias
  */
 
 /** @type {!RegExp} */
@@ -40,27 +40,23 @@ var TRIM_START = /^ *(?:act +)?/;
 /** @type {!RegExp} */
 var TRIM_END = / +$/;
 
-var findShortcuts = require('./find-shortcuts');
-
 /**
- * @param {string} taskDir
+ * @param {Config} config
  * @param {Args} args
- * @return {(Args|boolean)}
+ * @return {Args}
  */
-module.exports = function insertShortcuts(taskDir, args) {
+module.exports = function insertAlias(config, args) {
 
-  /** @type {?Shortcuts} */
-  var shortcuts;
   /** @type {Args} */
   var newArgs;
-  /** @type {!TypeError} */
-  var error;
+  /** @type {Alias} */
+  var alias;
   /** @type {string} */
   var cmd;
 
-  shortcuts = findShortcuts(taskDir);
+  alias = config.alias;
 
-  if (!shortcuts) return is.null(shortcuts) ? args : false;
+  if (!alias) return args;
 
   newArgs = [];
   each(args, function(arg, i, args) {
@@ -73,8 +69,8 @@ module.exports = function insertShortcuts(taskDir, args) {
       }
     }
 
-    if ( has(shortcuts, arg) ) {
-      cmd = shortcuts[arg];
+    if ( has(alias, arg) ) {
+      cmd = alias[arg];
       cmd = cut(cmd, TRIM_START);
       cmd = cut(cmd, TRIM_END);
       args = cmd.split(' ');
