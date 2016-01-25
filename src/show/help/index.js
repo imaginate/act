@@ -28,10 +28,9 @@ var printAlias     = require('./print-alias');
 /**
  * @param {string} taskDir
  * @param {Config} config
- * @param {Args} args
  * @return {boolean}
  */
-module.exports = function showHelp(taskDir, config, args) {
+module.exports = function showHelp(taskDir, config) {
 
   /** @type {string} */
   var result;
