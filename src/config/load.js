@@ -20,7 +20,9 @@
 
 'use strict';
 
-var is = require('../helpers').is;
+var help = require('../helpers');
+var is  = help.is;
+var log = help.log;
 
 /**
  * @typedef {Object<string, string>} Config
@@ -75,7 +77,7 @@ function getValue(config, key, defaultVal) {
  */
 function updateLogOCD(config) {
 
-  log.error.setFormat({
+  log.error.setConfig({
     'throw': config['throw'],
     'exit':  config['exit']
   });
