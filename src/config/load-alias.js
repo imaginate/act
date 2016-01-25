@@ -1,6 +1,6 @@
 /**
  * -----------------------------------------------------------------------------
- * ACT: FIND-ALIAS
+ * ACT: LOAD-ALIAS
  * -----------------------------------------------------------------------------
  * @version 1.0.1
  * @see [act]{@link https://github.com/imaginate/act}
@@ -45,10 +45,6 @@ module.exports = function findAlias(taskDir, config) {
   var alias;
   /** @type {!TypeError} */
   var error;
-  /** @type {!Array<string>} */
-  var files;
-  /** @type {string} */
-  var file;
 
   alias = get(config, ALIAS)[0] || null;
 
