@@ -18,7 +18,6 @@
 'use strict';
 
 exports['desc'] = 'only simple tasks';
-exports['done'] = false; // turns off auto task completion logs
 exports['value'] = 'require-all';
 exports['default'] = 'only -you';
 exports['methods'] = {
