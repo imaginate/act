@@ -1,8 +1,8 @@
 /**
  * -----------------------------------------------------------------------------
- * ACT TASK: test
+ * LOCAL ACT TASK: test
  * -----------------------------------------------------------------------------
- * @file Use `$ node act test` to access this file.
+ * @file Use `$ node bin/act test` to access this file.
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
  * @copyright 2016 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
@@ -20,9 +20,13 @@
 'use strict';
 
 var cp = require('child_process');
+var log = require('log-ocd')();
+var fuse = require('node-vitals')('fuse');
 
-// globally append all of are, vitals, and log-ocd methods
-require('./_helpers');
+log.error.setConfig({
+  'throw': false,
+  'exit':  true
+});
 
 exports['desc'] = 'run act unit tests';
 exports['done'] = false;
@@ -41,7 +45,7 @@ function runTests() {
   /** @type {!Object} */
   var opts;
 
-  logocd.debug('Starting `act` tests');
+  log.debug('Starting `act` tests');
 
   args = [
     './node_modules/mocha/bin/_mocha',
@@ -57,10 +61,10 @@ function runTests() {
   }
   catch (error) {
     error.name = fuse('Internal ', error.name || 'Error');
-    logocd.error(error);
+    log.error(error);
   }
 
   child.on('close', function() {
-    logocd.pass('Finished `act` tests');
+    log.pass('Finished `act` tests');
   });
 }
