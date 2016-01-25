@@ -20,7 +20,7 @@
 
 'use strict';
 
-var help = require('../helpers');
+var help = require('../../helpers');
 var fuse = help.fuse;
 var is   = help.is;
 var log  = help.log;
