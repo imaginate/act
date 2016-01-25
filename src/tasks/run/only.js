@@ -51,7 +51,7 @@ module.exports = function runTaskOnlyMethod(arg, result) {
   }
 
   try {
-    method(arg.val);
+    method(arg.value);
   }
   catch (error) {
     title = fuse('Failed `', arg.name, '` task');
