@@ -1,6 +1,6 @@
 /**
  * -----------------------------------------------------------------------------
- * ACT: INSERT-SHORTCUTS
+ * ACT: FIND-SHORTCUTS
  * -----------------------------------------------------------------------------
  * @version 1.0.1
  * @see [act]{@link https://github.com/imaginate/act}
@@ -41,7 +41,7 @@ var CONFIG = /^_?config(?:.json)?$/;
  * @param {string} taskDir
  * @return {(?Shortcuts|boolean)}
  */
-module.exports = function getShortcuts(taskDir) {
+module.exports = function findShortcuts(taskDir) {
 
   /** @type {?Shortcuts} */
   var shortcuts;
