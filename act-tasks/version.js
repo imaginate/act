@@ -60,12 +60,16 @@ function updateAllVersion(version) {
 
   filepaths = get.filepaths('.', {
     deep:      true,
-    validExts: '.js',
-    validDirs: 'src'
+    validExts: /js$/,
+    validDirs: 'bin'
   });
-  each(filepaths, function(filepath) {
-    insertJSVersion(filepath, version);
+  insertJSVersions('.', filepaths, version);
+
+  filepaths = get.filepaths('src', {
+    deep:      true,
+    validExts: /js$/
   });
+  insertJSVersions('src', filepaths, version);
 
   insertNPMVersion(version);
 }
@@ -99,6 +103,21 @@ function isSemVersion(version, includePre) {
 
 /**
  * @private
+ * @param {string} basedir
+ * @param {!Array<string>} filepaths
+ * @param {string} version
+ */
+function insertJSVersions(basedir, filepaths, version) {
+  basedir = basedir && fuse(basedir, '/');
+  version = fuse('$1', version);
+  each(filepaths, function(filepath) {
+    filepath = fuse(basedir, filepath);
+    insertJSVersion(filepath, version);
+  });
+}
+
+/**
+ * @private
  * @param {string} filepath
  * @param {string} version
  */
@@ -108,7 +127,6 @@ function insertJSVersion(filepath, version) {
   var content;
 
   content = get.file(filepath);
-  version = fuse('$1', version);
   content = remap(content, BASE_VERSION, version);
   to.file(content, filepath);
 }
