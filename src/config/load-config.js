@@ -55,7 +55,7 @@ module.exports = function loadConfig(taskDir) {
 
   if ( is.same(config.alias, false) ) return null;
 
-  return config;
+  return updateLogOCD(config);
 };
 
 /**
@@ -66,4 +66,25 @@ module.exports = function loadConfig(taskDir) {
  */
 function getValue(config, key, defaultVal) {
   return is.bool( config[key] ) ? config[key] : DEFAULTS[key];
+}
+
+/**
+ * @private
+ * @param {!Config} config
+ * @return {!Config}
+ */
+function updateLogOCD(config) {
+
+  log.error.setFormat({
+    'throw': config['throw'],
+    'exit':  config['exit']
+  });
+
+  if (!config.done) {
+    log.pass.setConfig({
+      'logger': function(){}
+    });
+  }
+
+  return config;
 }
