@@ -43,11 +43,11 @@ var NODE = /^["']?(?:.+[\/\\])?node(?:.[a-z]+)?["']?$/;
 /** @type {!RegExp} */
 var ACT = /^["']?(?:.+[\/\\])?act(?:.js)?["']?$/;
 
-var findTaskDir  = require('./src/find-task-dir');
-var isHelp       = require('./src/is-help');
-var showHelp     = require('./src/show-help');
-var showVersion  = require('./src/show-version');
-var runTasks     = require('./src/run-tasks');
+var findTaskDir  = require('./src/tasks/find-dir');
+var loadConfig   = require('./src/config/load');
+var showHelp     = require('./src/show/help');
+var showVersion  = require('./src/show/version');
+var runTasks     = require('./src/tasks/run');
 
 /**
  * @public
@@ -56,6 +56,8 @@ var runTasks     = require('./src/run-tasks');
  */
 module.exports = function initAct(cmd) {
 
+  /** @type {(?Config|boolean)} */
+  var config;
   /** @type {!TypeError} */
   var error;
   /** @type {Args} */
@@ -83,9 +85,12 @@ module.exports = function initAct(cmd) {
   }
 
   dir = findTaskDir(BASE_DIR);
-  return dir
-    ? isHelp(args)
-      ? showHelp(dir, args)
-      : showVersion(args) || runTasks(dir, args)
+  config = loadConfig(dir);
+  return config
+    ? is.help(args)
+      ? showHelp(dir, config)
+      : is.version(args)
+        ? showVersion(args)
+        : runTasks(dir, config, args)
     : false;
 };
