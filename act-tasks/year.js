@@ -1,8 +1,8 @@
 /**
  * -----------------------------------------------------------------------------
- * ACT TASK: year
+ * LOCAL ACT TASK: year
  * -----------------------------------------------------------------------------
- * @file Use `$ node act year` to access this file.
+ * @file Use `$ node bin/act year` to access this file.
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
  * @copyright 2016 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
@@ -19,8 +19,16 @@
 
 'use strict';
 
-// globally append all of are, vitals, and log-ocd methods
-require('./_helpers');
+var vitals = require('node-vitals')('base', 'fs');
+var each   = vitals.each;
+var fuse   = vitals.fuse;
+var get    = vitals.get;
+var has    = vitals.has;
+var remap  = vitals.remap;
+var to     = vitals.to;
+
+var YEAR_FIND = /(copyright )2[0-9]{3}/ig;
+var YEAR_VAL  = /^2[0-9]{3}$/;
 
 exports['desc'] = 'updates year in entire repo';
 exports['value'] = '2xxx';
@@ -35,27 +43,14 @@ function updateYear(year) {
   /** @type {!Array<string>} */
   var filepaths;
 
-  if ( !isYear(year) ) throw new Error('invalid year for act year task');
+  if ( !isYear(year) ) throw new Error('invalid value (must be a year - 2xxx)');
 
   filepaths = get.filepaths('.', {
-    validExts:   '.js',
-    invalidExts: '.json'
-  });
-  insertYears('.', filepaths, year);
-
-  filepaths = get.filepaths('example', {
     deep:        true,
-    validExts:   '.js',
-    invalidExts: '.json'
+    validExts:   /^js|md$/,
+    invalidDirs: /^node_modules$/
   });
-  insertYears('example', filepaths, year);
-
-  filepaths = get.filepaths('src', {
-    deep:        true,
-    validExts:   '.js',
-    invalidExts: '.json'
-  });
-  insertYears('src', filepaths, year);
+  insertYears(filepaths, year);
 }
 
 /**
@@ -64,20 +59,17 @@ function updateYear(year) {
  * @return {boolean}
  */
 function isYear(year) {
-  return !!year && has(year, /^2[0-9]{3}$/);
+  return !!year && has(year, YEAR_VAL);
 }
 
 /**
  * @private
- * @param {string} base
  * @param {!Array<string>} filepaths
  * @param {string} year
  */
-function insertYears(base, filepaths, year) {
-  base = fuse(base, '/');
+function insertYears(filepaths, year) {
   year = fuse('$1', year);
   each(filepaths, function(filepath) {
-    filepath = fuse(base, filepath);
     insertYear(filepath, year);
   });
 }
@@ -91,11 +83,8 @@ function insertYear(filepath, year) {
 
   /** @type {string} */
   var content;
-  /** @type {!RegExp} */
-  var regex;
 
-  regex = /(\@copyright )2[0-9]{3}/g;
   content = get.file(filepath);
-  content = remap(content, regex, year);
+  content = remap(content, YEAR_FIND, year);
   to.file(content, filepath);
 }
