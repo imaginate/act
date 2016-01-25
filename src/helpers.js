@@ -46,18 +46,30 @@ exports.until  = vitals.until;
 
 // see https://github.com/imaginate/log-ocd
 var log = require('log-ocd')();
+
 log.error.setConfig({
   'ocdmap': true,
   'throw': false,
   'exit':  true
 });
+
+log.error.setFormat({
+  'lineLimit': 80
+});
+
 log.pass.setFormat({
   'linesAfter': 0
 });
+
 exports.log = log;
+
+//////////////////////////////////////////////////////////////////////////////
+// CUSTOM IS METHODS
 
 var has = vitals.has;
 
+/** @type {!RegExp} */
+var VERSION = /^-+v(?:ersion)?$/;
 /** @type {!RegExp} */
 var HELP = /^\?|-+h(?:elp)?$/;
 
@@ -68,9 +80,6 @@ var HELP = /^\?|-+h(?:elp)?$/;
 exports.is.help = function isHelp(args) {
   return !args.length || has(args[0], HELP);
 };
-
-/** @type {!RegExp} */
-var VERSION = /^-+v(?:ersion)?$/;
 
 /**
  * @param {Args} args
