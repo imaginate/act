@@ -26,6 +26,9 @@ var is = require('../helpers').is;
  * @typedef {Object<string, string>} Config
  */
 
+/** @type {!Config} */
+var DEFAULTS = require('./config-defaults');
+
 var findConfig = require('./find-config');
 var loadAlias  = require('./load-alias');
 
@@ -37,12 +40,6 @@ module.exports = function loadConfig(taskDir) {
 
   /** @type {(?Config|boolean)} */
   var config;
-  /** @type {!TypeError} */
-  var error;
-  /** @type {!Array<string>} */
-  var files;
-  /** @type {string} */
-  var file;
 
   config = !!taskDir && findConfig(taskDir);
 
@@ -55,16 +52,18 @@ module.exports = function loadConfig(taskDir) {
     'done':  getValue(config, 'done',  true),
     'exit':  getValue(config, 'exit',  true)
   };
-  return is.same(config.alias, false) ? null : config;
+
+  if ( is.same(config.alias, false) ) return null;
+
+  return config;
 };
 
 /**
  * @private
  * @param {!Config} config
  * @param {string} key
- * @param {boolean} defaultVal
  * @return {boolean}
  */
 function getValue(config, key, defaultVal) {
-  return is.bool( config[key] ) ? config[key] : defaultVal;
+  return is.bool( config[key] ) ? config[key] : DEFAULTS[key];
 }
