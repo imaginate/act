@@ -4,7 +4,7 @@
  * -----------------------------------------------------------------------------
  * ACT COMMAND
  * -----------------------------------------------------------------------------
- * @version 0.0.1
+ * @version 1.1.0
  * @see [act]{@link https://github.com/imaginate/act}
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
