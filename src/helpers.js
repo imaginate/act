@@ -56,6 +56,8 @@ log.pass.setFormat({
 });
 exports.log = log;
 
+var has = vitals.has;
+
 /** @type {!RegExp} */
 var HELP = /^\?|-+h(?:elp)?$/;
 
