@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------------
  * ACT: LOAD-CONFIG
  * -----------------------------------------------------------------------------
- * @version 1.1.0
+ * @version 1.1.1
  * @see [act]{@link https://github.com/imaginate/act}
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
