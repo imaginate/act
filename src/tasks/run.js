@@ -41,8 +41,8 @@ module.exports = function runTasks(taskDir, config, args) {
   /** @type {(TaskArgs|boolean)} */
   var tasks;
 
-  args = insertShortcuts(taskDir, args);
-  tasks = args && getTaskArgs(taskDir, args);
+  args = insertAlias(config, args);
+  tasks = newTaskArgs(taskDir, args);
   return tasks && roll(true, tasks, function(result, arg) {
     return arg
       ? arg.methods
