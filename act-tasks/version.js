@@ -28,19 +28,18 @@ var remap  = vitals.remap;
 var to     = vitals.to;
 
 var ERROR_MSG = 'invalid value (must be a semantic version)';
-var BASE_SEMANTIC = /^[0-9]+\.[0-9]+\.[0-9]+$/;
-var PRE_SEMANTIC  = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+.?[0-9]*)?$/;
-var BASE_VERSION  = /\b(v?)[0-9]+\.[0-9]+\.[0-9]+\b/g;
-var NPM_VERSION   = /("version": ")[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+.?[0-9]*)?/;
-
+var SEMANTIC  = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+\.?[0-9]*)?$/;
+var NPM_BADGE = /(badge\/npm-)[0-9]+\.[0-9]+\.[0-9]+(?:--[a-z]+\.?[0-9]*)?/;
+var ALL_VERSION = /\b(v?)[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+\.?[0-9]*)?\b/g;
+var NPM_VERSION = /("version": ")[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+\.?[0-9]*)?/;
 
 exports['desc'] = 'updates version for the repo';
-exports['value'] = 'x.x.x';
+exports['value'] = 'x.x.x-pre.x';
 exports['default'] = '-all';
 exports['methods'] = {
   'all': {
     'desc': 'updates version for entire repo',
-    'value': 'x.x.x',
+    'value': 'x.x.x-pre.x',
     'method': updateAllVersion
   },
   'npm': {
@@ -93,16 +92,10 @@ function updateNPMVersion(version) {
 /**
  * @private
  * @param {string} version
- * @param {boolean=} includePre
  * @return {boolean}
  */
-function isSemVersion(version, includePre) {
-
-  /** @type {!RegExp} */
-  var semantic;
-
-  semantic = includePre ? PRE_SEMANTIC : BASE_SEMANTIC;
-  return !!version && has(version, semantic);
+function isSemVersion(version) {
+  return !!version && has(version, SEMANTIC);
 }
 
 /**
@@ -131,7 +124,7 @@ function insertJSVersion(filepath, version) {
   var content;
 
   content = get.file(filepath);
-  content = remap(content, BASE_VERSION, version);
+  content = remap(content, ALL_VERSION, version);
   to.file(content, filepath);
 }
 
@@ -148,4 +141,9 @@ function insertNPMVersion(version) {
   version = fuse('$1', version);
   content = remap(content, NPM_VERSION, version);
   to.file(content, './package.json');
+
+  content = get.file('./README.md');
+  version = remap(version, /-/, '--');
+  content = remap(content, NPM_BADGE, version);
+  to.file(content, './README.md');
 }
