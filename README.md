@@ -1,4 +1,4 @@
-# act [![build status](https://travis-ci.org/imaginate/act.svg?branch=master)](https://travis-ci.org/imaginate/act) [![npm version](https://badge.fury.io/js/node-act.svg)](https://badge.fury.io/js/node-act)
+# act [![build status](https://travis-ci.org/imaginate/act.svg?branch=master)](https://travis-ci.org/imaginate/act) [![npm version](https://img.shields.io/badge/npm-1.1.1-brightgreen.svg?style=flat)](https://www.npmjs.com/package/node-act)
 ### Simple Task Management
 Quickly write, organize, and run [node.js](https://nodejs.org) build scripts/tasks with [_act_](https://github.com/imaginate/act).
 
