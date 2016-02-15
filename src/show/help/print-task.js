@@ -48,7 +48,7 @@ module.exports = function printHelpTask(task, len) {
 
   val = task.val && fuse('= <', task.val, '>');
   base = task.default && fuse(' (default: ', task.default, ')');
-  name = fuse(name, val);
+  name = fuse(task.name, val);
   space = fill(len - name.length, ' ');
   methods = printHelpMethods(task.methods);
   return fuse('    ', name, space, task.desc, base, '\n', methods);
