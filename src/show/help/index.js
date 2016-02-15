@@ -22,6 +22,7 @@
 
 var fuse = require('../../helpers').fuse;
 
+var newHelpTasks   = require('./new-tasks');
 var printHelpTasks = require('./print-tasks');
 var printAlias     = require('./print-alias');
 
@@ -37,7 +38,7 @@ module.exports = function showHelp(taskDir, config) {
   /** @type {!HelpTasks} */
   var tasks;
 
-  tasks = getHelpTasks(taskDir);
+  tasks = newHelpTasks(taskDir);
 
   result = '\n';
   result = fuse(result, '  usage: act <task> [...<-method>]\n\n');
