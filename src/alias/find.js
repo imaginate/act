@@ -9,7 +9,6 @@
  * @copyright 2016 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
  *
  * Supporting Libraries:
- * @see [are]{@link https://github.com/imaginate/are}
  * @see [vitals]{@link https://github.com/imaginate/vitals}
  * @see [log-ocd]{@link https://github.com/imaginate/log-ocd}
  *
@@ -43,12 +42,12 @@ module.exports = function findAlias(taskDir) {
 
   /** @type {?Alias} */
   var alias;
-  /** @type {!TypeError} */
-  var error;
   /** @type {!Array<string>} */
   var files;
   /** @type {string} */
   var file;
+  /** @type {!TypeError} */
+  var err;
 
   files = get.filepaths(taskDir, { validExts: 'json' });
 
@@ -67,15 +66,14 @@ module.exports = function findAlias(taskDir) {
   try {
     alias = require(file);
   }
-  catch (error) {
-    log.error('Failed `act` command', error, { file: file });
+  catch (err) {
+    log.error('Failed `act` command', err, { file: file });
     return false;
   }
 
   if ( !is('stringMap', alias) ) {
-    error = 'invalid `alias.json` (must be an object with string values)';
-    error = new TypeError(error);
-    log.error('Failed `act` command', error, { alias: alias });
+    err = new TypeError('invalid `alias.json` (must be an object with string values)');
+    log.error('Failed `act` command', err, { alias: alias });
     return false;
   }
 
