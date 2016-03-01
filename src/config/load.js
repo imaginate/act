@@ -9,7 +9,6 @@
  * @copyright 2016 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
  *
  * Supporting Libraries:
- * @see [are]{@link https://github.com/imaginate/are}
  * @see [vitals]{@link https://github.com/imaginate/vitals}
  * @see [log-ocd]{@link https://github.com/imaginate/log-ocd}
  *
@@ -21,8 +20,9 @@
 'use strict';
 
 var help = require('../helpers');
-var is  = help.is;
-var log = help.log;
+var is   = help.is;
+var log  = help.log;
+var same = help.same;
 
 /**
  * @typedef {Object<string, string>} Config
@@ -45,7 +45,7 @@ module.exports = function loadConfig(taskDir) {
 
   config = !!taskDir && findConfig(taskDir);
 
-  if ( is.same(config, false) ) return null;
+  if ( same(config, false) ) return null;
 
   config = config || {};
   config = {
@@ -55,7 +55,7 @@ module.exports = function loadConfig(taskDir) {
     'exit':  getValue(config, 'exit',  true)
   };
 
-  if ( is.same(config.alias, false) ) return null;
+  if ( same(config.alias, false) ) return null;
 
   return updateLogOCD(config);
 };
@@ -67,7 +67,9 @@ module.exports = function loadConfig(taskDir) {
  * @return {boolean}
  */
 function getValue(config, key, defaultVal) {
-  return is.bool( config[key] ) ? config[key] : DEFAULTS[key];
+  return is.bool( config[key] )
+    ? config[key]
+    : DEFAULTS[key];
 }
 
 /**
