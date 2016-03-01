@@ -16,7 +16,7 @@
     "act": "bin/act.js"
   },
   "scripts": {
-    "test": "node ./bin/act.js test"
+    "test": "node ./test/init.js"
   },
   "homepage": "https://github.com/imaginate/act",
   "dependencies": {
@@ -24,6 +24,7 @@
     "log-ocd": ">1.0.0-beta"
   },
   "devDependencies": {
+    "chalk": "1.x",
     "mocha": "2.x"
   },
   "keywords": [
