@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------------
  * ACT: SHOW-HELP
  * -----------------------------------------------------------------------------
- * @version 1.1.2
+ * @version 1.2.0
  * @see [act]{@link https://github.com/imaginate/act}
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
