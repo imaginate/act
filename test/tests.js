@@ -6,34 +6,33 @@
  * @copyright 2016 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
  *
  * Supporting Libraries:
- * @see [are]{@link https://github.com/imaginate/are}
  * @see [vitals]{@link https://github.com/imaginate/vitals}
  * @see [log-ocd]{@link https://github.com/imaginate/log-ocd}
  *
  * Annotations:
- * @see [JSDoc3]{@link http://usejsdoc.org/}
- * @see [Closure Compiler specific JSDoc]{@link https://developers.google.com/closure/compiler/docs/js-for-compiler}
+ * @see [JSDoc3](http://usejsdoc.org)
+ * @see [Closure Compiler JSDoc Syntax](https://developers.google.com/closure/compiler/docs/js-for-compiler)
  */
 
 'use strict';
 
-describe('act tests', function() {
+suite('act tests', function() {
 
   beforeEach(function() {
     global.actOut = [];
   });
 
-  it('act free', function() {
+  test('act free', function() {
     act('free');
     assert( actOut[0] === 'free' );
   });
 
-  it('act real', function() {
+  test('act real', function() {
     act('real');
     assert( actOut[0] === 'free' );
   });
 
-  it('act only= live free', function() {
+  test('act only= live free', function() {
     act('only= live free');
     assert( actOut[0] === 'only' );
     assert( actOut[1] === 'you'  );
@@ -41,14 +40,14 @@ describe('act tests', function() {
     assert( actOut[3] === 'free' );
   });
 
-  it('act only -one= 1', function() {
+  test('act only -one= 1', function() {
     act('only -one= 1');
     assert( actOut[0] === 'only' );
     assert( actOut[1] === 'one'  );
     assert( actOut[2] ===  '1'   );
   });
 
-  it('act only -one= 2 -you', function() {
+  test('act only -one= 2 -you', function() {
     act('only -one= 2 -you');
     assert( actOut[0] === 'only' );
     assert( actOut[1] === 'one'  );
@@ -57,7 +56,7 @@ describe('act tests', function() {
     assert( actOut[4] === 'you'  );
   });
 
-  it('act only= 4 -you -one= 3 -one', function() {
+  test('act only= 4 -you -one= 3 -one', function() {
     act('only= 4 -you -one= 3 -one');
     assert( actOut[0] === 'only' );
     assert( actOut[1] === 'you'  );
@@ -70,7 +69,7 @@ describe('act tests', function() {
     assert( actOut[8] ===  '4'   );
   });
 
-  it('act upit', function() {
+  test('act upit', function() {
     act('upit');
     assert( actOut[0] === 'only' );
     assert( actOut[1] === 'you'  );
@@ -82,5 +81,4 @@ describe('act tests', function() {
     assert( actOut[7] === 'one'  );
     assert( actOut[8] ===  '4'   );
   });
-
 });
