@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------------
  * ACT: RUN-TASKS
  * -----------------------------------------------------------------------------
- * @version 1.2.0
+ * @version 1.3.0
  * @see [act]{@link https://github.com/imaginate/act}
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
