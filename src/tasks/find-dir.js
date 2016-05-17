@@ -37,7 +37,9 @@ module.exports = function findTaskDir(basepath) {
   var dirs;
 
   basepath = remap(basepath, /\\/g, '/');
-  dirs = get.dirpaths(basepath, { validDirs: /^_?act-?tasks?$/ });
+  dirs = get.dirpaths(basepath, {
+    validDirs: /^_?(?:[aA]ct|[tT]asks?|[aA]ct-?tasks?)$/
+  });
 
   if (!dirs.length) {
     error = new Error('no valid `act-task` directory found');
