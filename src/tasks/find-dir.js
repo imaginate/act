@@ -19,11 +19,33 @@
 
 'use strict';
 
-var help = require('../helpers');
+var help  = require('../helpers');
 var get   = help.get;
 var fuse  = help.fuse;
 var log   = help.log;
 var remap = help.remap;
+var same  = help.same;
+var until = help.until;
+
+// all valid dirs
+var ACT_DIRS_REGEX = /^(?:[aA]ct|[tT]asks?|[aA]ct-?tasks?)$/;
+// dirs in order of validity
+var ACT_DIRS_ARR = [
+  'Act-tasks',
+  'act-tasks',
+  'Acttasks',
+  'acttasks',
+  'Act-task',
+  'act-task',
+  'Acttask',
+  'acttask',
+  'Act',
+  'act',
+  'Tasks',
+  'tasks',
+  'Task',
+  'task'
+];
 
 /**
  * @param {string} basepath
@@ -31,14 +53,18 @@ var remap = help.remap;
  */
 module.exports = function findTaskDir(basepath) {
 
+  /** @type {string} */
+  var actdir;
   /** @type {!Error} */
   var error;
   /** @type {!Array<string>} */
   var dirs;
+  /** @type {number} */
+  var i;
 
   basepath = remap(basepath, /\\/g, '/');
   dirs = get.dirpaths(basepath, {
-    validDirs: /^_?(?:[aA]ct|[tT]asks?|[aA]ct-?tasks?)$/
+    validDirs: ACT_DIRS_REGEX
   });
 
   if (!dirs.length) {
@@ -48,10 +74,16 @@ module.exports = function findTaskDir(basepath) {
   }
 
   if (dirs.length > 1) {
-    error = new Error('multiple `act-task` directories found');
-    log.error('Failed `act` command', error);
-    return '';
+    i = 0;
+    until(true, dirs, function(dir) {
+      if ( same(dir, ACT_DIRS_ARR[i]) ) {
+        actdir = dir;
+        return true;
+      }
+      ++i;
+    });
   }
+  else actdir = dirs[0];
 
-  return fuse(basepath, '/', dirs[0], '/');
+  return fuse(basepath, '/', actdir, '/');
 };
