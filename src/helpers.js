@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------------
  * ACT: HELPERS
  * -----------------------------------------------------------------------------
- * @version 1.3.0
+ * @version 1.4.0
  * @see [act]{@link https://github.com/imaginate/act}
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
