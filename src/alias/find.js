@@ -32,7 +32,7 @@ var until = help.until;
  */
 
 /** @type {!RegExp} */
-var ALIAS = /^_?(?:shortcuts?|alias).json$/;
+var ALIAS = /^(?:shortcuts?|alias(?:es)?).json$/;
 
 /**
  * @param {string} taskDir

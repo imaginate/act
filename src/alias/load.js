@@ -29,7 +29,7 @@ var log = help.log;
  */
 
 /** @type {!RegExp} */
-var ALIAS = /^shortcuts?|alias$/;
+var ALIAS = /^(?:shortcuts?|alias(?:es)?)$/;
 
 var findAlias = require('./find');
 
