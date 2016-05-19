@@ -1,7 +1,8 @@
 {
   "alias": {
     "real": "free",
-    "upit": "only= 4 -you -one= 3 -one"
+    "upit": "only= 4 -you -one= 3 -one",
+    "split|alias,names": "free"
   },
   "done": false
 }

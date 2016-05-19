@@ -32,6 +32,13 @@ suite('act tests', function() {
     assert( actOut[0] === 'free' );
   });
 
+  test('act split alias names', function() {
+    act('split alias names');
+    assert( actOut[0] === 'free' );
+    assert( actOut[1] === 'free' );
+    assert( actOut[2] === 'free' );
+  });
+
   test('act only= live free', function() {
     act('only= live free');
     assert( actOut[0] === 'only' );
