@@ -38,6 +38,8 @@ var VALUE = /=$/;
 var TRIM_START = /^ *(?:act +)?/;
 /** @type {!RegExp} */
 var TRIM_END = / +$/;
+/** @type {!RegExp} */
+var SPLIT = /[|,]/g;
 
 /**
  * @param {Config} config
@@ -53,7 +55,7 @@ module.exports = function insertAlias(config, args) {
   /** @type {string} */
   var cmd;
 
-  alias = config.alias;
+  alias = splitKeys(config.alias);
 
   if (!alias) return args;
 
@@ -80,3 +82,37 @@ module.exports = function insertAlias(config, args) {
 
   return newArgs;
 };
+
+/**
+ * @private
+ * @param {?Alias} alias
+ * @return {?Alias}
+ */
+function splitKeys(alias) {
+
+  /** @type {Alias} */
+  var newAlias;
+  /** @type {!Array<string>} */
+  var keys;
+
+  if (!alias) return alias;
+
+  newAlias = {};
+  each(alias, function(val, key) {
+
+    SPLIT.lastIndex = 0;
+
+    if ( !has(key, SPLIT) ) {
+      newAlias[key] = val;
+      return;
+    }
+
+    SPLIT.lastIndex = 0;
+    keys = key.split(SPLIT);
+    each(keys, function(key) {
+      newAlias[key] = val;
+    });
+  });
+
+  return newAlias;
+}
