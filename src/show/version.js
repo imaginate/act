@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------------
  * ACT: SHOW-VERSION
  * -----------------------------------------------------------------------------
- * @version 1.4.0
+ * @version 1.4.1
  * @see [act]{@link https://github.com/imaginate/act}
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
@@ -20,7 +20,7 @@
 'use strict';
 
 /** @type {string} */
-var VERSION = 'v1.4.0';
+var VERSION = 'v1.4.1';
 
 /**
  * @param {Args} args

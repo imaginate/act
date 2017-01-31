@@ -3,7 +3,7 @@
  * LOCAL ACT TASK: version
  * -----------------------------------------------------------------------------
  * @file Use `$ node bin/act version` to access this file.
- * @version 1.4.0
+ * @version 1.4.1
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
  * @copyright 2017 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
