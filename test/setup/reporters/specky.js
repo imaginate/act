@@ -3,7 +3,7 @@
  * ACT MOCHA REPORTER: specky
  * -----------------------------------------------------------------------------
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
- * @copyright 2016 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
+ * @copyright 2017 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
  *
  * Annotations:
  * @see [JSDoc3](http://usejsdoc.org)
@@ -11,7 +11,7 @@
  *
  * Copyright Notice:
  * The below code is a modified version of the Mocha [spec reporter](https://github.com/mochajs/mocha/blob/master/lib/reporters/spec.js).
- * @copyright 2016 TJ Holowaychuk <tj@vision-media.ca>
+ * @copyright 2017 TJ Holowaychuk <tj@vision-media.ca>
  */
 
 'use strict';
