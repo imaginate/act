@@ -3,35 +3,20 @@
  * LOCAL ACT TASK: version
  * -----------------------------------------------------------------------------
  * @file Use `$ node bin/act version` to access this file.
+ * @version 1.4.0
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
  * @copyright 2016 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
  *
- * Supporting Libraries:
- * @see [are]{@link https://github.com/imaginate/are}
- * @see [vitals]{@link https://github.com/imaginate/vitals}
- * @see [log-ocd]{@link https://github.com/imaginate/log-ocd}
- *
- * Annotations:
- * @see [JSDoc3]{@link http://usejsdoc.org/}
- * @see [Closure Compiler specific JSDoc]{@link https://developers.google.com/closure/compiler/docs/js-for-compiler}
+ * @see [JSDoc3](http://usejsdoc.org)
+ * @see [Closure Compiler JSDoc](https://developers.google.com/closure/compiler/docs/js-for-compiler)
  */
 
 'use strict';
 
-var vitals = require('node-vitals')('base', 'fs');
-var each   = vitals.each;
-var fuse   = vitals.fuse;
-var get    = vitals.get;
-var has    = vitals.has;
-var remap  = vitals.remap;
-var to     = vitals.to;
-
-var ERROR_MSG = 'invalid value (must be a semantic version)';
-var SEMANTIC  = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+\.?[0-9]*)?$/;
-var NPM_BADGE = /(badge\/npm-)[0-9]+\.[0-9]+\.[0-9]+(?:--[a-z]+\.?[0-9]*)?/;
-var ALL_VERSION = /\b(v?)[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+\.?[0-9]*)?\b/g;
-var NPM_VERSION = /("version": ")[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+\.?[0-9]*)?/;
+////////////////////////////////////////////////////////////
+// EXPORTS
+////////////////////////////////////////////////////////////
 
 exports['desc'] = 'updates version for the repo';
 exports['value'] = 'x.x.x-pre.x';
@@ -49,6 +34,36 @@ exports['methods'] = {
   }
 };
 
+////////////////////////////////////////////////////////////
+// HELPERS
+////////////////////////////////////////////////////////////
+
+var vitals = require('node-vitals')('base', 'fs');
+var each   = vitals.each;
+var fuse   = vitals.fuse;
+var get    = vitals.get;
+var has    = vitals.has;
+var remap  = vitals.remap;
+var to     = vitals.to;
+
+var path = require('path');
+var resolve = path.resolve;
+
+////////////////////////////////////////////////////////////
+// CONSTANTS
+////////////////////////////////////////////////////////////
+
+var ROOTPATH = resolve(__dirname, '..');
+var ERRMSG   = 'invalid value (must be a semantic version)';
+
+var SEMVER = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+\.?[0-9]*)?$/;
+var BDGVER = /(badge\/npm-)[0-9]+\.[0-9]+\.[0-9]+(?:--[a-z]+\.?[0-9]*)?/;
+var SRCVER = /\b(v?)[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+\.?[0-9]*)?\b/g;
+var PKGVER = /("version": ")[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z]+\.?[0-9]*)?/;
+
+////////////////////////////////////////////////////////////
+// PUBLIC METHODS
+////////////////////////////////////////////////////////////
 
 /**
  * @public
@@ -59,22 +74,17 @@ function updateAllVersion(version) {
   /** @type {!Array<string>} */
   var filepaths;
 
-  if ( !isSemVersion(version) ) throw new Error(ERROR_MSG);
+  if ( !isSemVersion(version) ) throw new Error(ERRMSG);
 
-  filepaths = get.filepaths('.', {
-    deep:      true,
-    validExts: /js$/,
-    validDirs: 'bin'
+  filepaths = get.filepaths(ROOTPATH, {
+    basepath:    true,
+    recursive:   true,
+    validExts:   'js',
+    invalidDirs: '.*|node_modules|tmp'
   });
-  insertJSVersions('.', filepaths, version);
+  insertVersions(filepaths, version);
 
-  filepaths = get.filepaths('src', {
-    deep:      true,
-    validExts: /js$/
-  });
-  insertJSVersions('src', filepaths, version);
-
-  insertNPMVersion(version);
+  updateNPMVersion(version);
 }
 
 /**
@@ -83,11 +93,29 @@ function updateAllVersion(version) {
  */
 function updateNPMVersion(version) {
 
-  if ( !isSemVersion(version, true) ) throw new Error(ERROR_MSG);
+  /** @type {string} */
+  var filepath;
+  /** @type {string} */
+  var content;
 
-  insertNPMVersion(version);
+  if ( !isSemVersion(version) ) throw new Error(ERRMSG);
+
+  filepath = resolve(ROOTPATH, 'package.json');
+  content  = get.file(filepath);
+  version  = fuse('$1', version);
+  content  = remap(content, PKGVER, version);
+  to.file(content, filepath);
+
+  filepath = resolve(ROOTPATH, 'README.md');
+  content  = get.file(filepath);
+  version  = remap(version, /-/, '--');
+  content  = remap(content, BDGVER, version);
+  to.file(content, filepath);
 }
 
+////////////////////////////////////////////////////////////
+// PRIVATE METHODS
+////////////////////////////////////////////////////////////
 
 /**
  * @private
@@ -95,21 +123,18 @@ function updateNPMVersion(version) {
  * @return {boolean}
  */
 function isSemVersion(version) {
-  return !!version && has(version, SEMANTIC);
+  return !!version && has(version, SEMVER);
 }
 
 /**
  * @private
- * @param {string} basedir
  * @param {!Array<string>} filepaths
  * @param {string} version
  */
-function insertJSVersions(basedir, filepaths, version) {
-  basedir = basedir && fuse(basedir, '/');
+function insertVersions(filepaths, version) {
   version = fuse('$1', version);
   each(filepaths, function(filepath) {
-    filepath = fuse(basedir, filepath);
-    insertJSVersion(filepath, version);
+    insertVersion(filepath, version);
   });
 }
 
@@ -118,32 +143,13 @@ function insertJSVersions(basedir, filepaths, version) {
  * @param {string} filepath
  * @param {string} version
  */
-function insertJSVersion(filepath, version) {
+function insertVersion(filepath, version) {
 
   /** @type {string} */
   var content;
 
   content = get.file(filepath);
-  content = remap(content, ALL_VERSION, version);
+  content = remap(content, SRCVER, version);
   to.file(content, filepath);
 }
 
-/**
- * @private
- * @param {string} version
- */
-function insertNPMVersion(version) {
-
-  /** @type {string} */
-  var content;
-
-  content = get.file('./package.json');
-  version = fuse('$1', version);
-  content = remap(content, NPM_VERSION, version);
-  to.file(content, './package.json');
-
-  content = get.file('./README.md');
-  version = remap(version, /-/, '--');
-  content = remap(content, NPM_BADGE, version);
-  to.file(content, './README.md');
-}
