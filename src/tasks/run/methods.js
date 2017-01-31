@@ -25,15 +25,17 @@ var has  = help.has;
 var is   = help.is;
 var log  = help.log;
 var roll = help.roll;
+var same = help.same;
 
 var runMethod = require('./method');
 
 /**
  * @param {TaskArg} arg
+ * @param {boolean} end
  * @param {boolean} result
  * @return {boolean}
  */
-module.exports = function runTaskMethods(arg, result) {
+module.exports = function runTaskMethods(arg, end, result) {
 
   /** @type {!(Object|function)} */
   var methods;
@@ -41,6 +43,8 @@ module.exports = function runTaskMethods(arg, result) {
   var error;
   /** @type {string} */
   var title;
+  /** @type {number} */
+  var last;
 
   methods = arg.exports.methods;
 
@@ -52,6 +56,11 @@ module.exports = function runTaskMethods(arg, result) {
     return false;
   }
 
+  last = end && result
+    ? arg.methods.length
+      ? arg.methods.length - 1
+      : 0
+    : -1;
   return roll(result, arg.methods, function(result, key, i) {
 
     if ( !has(methods, key) ) {
@@ -61,6 +70,7 @@ module.exports = function runTaskMethods(arg, result) {
       return false;
     }
 
-    return runMethod(arg, methods[key], key, arg.values[i], result);
+    end = result && same(i, last);
+    return runMethod(arg, methods[key], key, arg.values[i], end, result);
   });
 };

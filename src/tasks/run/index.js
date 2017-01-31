@@ -19,7 +19,9 @@
 
 'use strict';
 
-var roll = require('../../helpers').roll;
+var help = require('../../helpers');
+var roll = help.roll;
+var same = help.same;
 
 var insertAlias   = require('../../alias/insert');
 var newTaskArgs   = require('../new-args');
@@ -36,14 +38,26 @@ module.exports = function runTasks(taskDir, config, args) {
 
   /** @type {(TaskArgs|boolean)} */
   var tasks;
+  /** @type {number} */
+  var last;
+  /** @type {boolean} */
+  var end;
 
   args = insertAlias(config, args);
   tasks = newTaskArgs(taskDir, args);
-  return tasks && roll(true, tasks, function(result, arg) {
+
+  if (!tasks) return false;
+
+  last = tasks.length
+    ? tasks.length - 1
+    : 0;
+
+  return roll(true, tasks, function(result, arg, i) {
+    end = same(i, last);
     return arg
       ? arg.methods
-        ? runMethods(arg, result)
-        : runOnlyMethod(arg, result)
+        ? runMethods(arg, end, result)
+        : runOnlyMethod(arg, end, result)
       : false;
   });
 };

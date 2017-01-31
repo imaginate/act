@@ -26,10 +26,11 @@ var log  = help.log;
 
 /**
  * @param {TaskArg} arg
+ * @param {boolean} end
  * @param {boolean} result
  * @return {boolean}
  */
-module.exports = function runTaskOnlyMethod(arg, result) {
+module.exports = function runTaskOnlyMethod(arg, end, result) {
 
   /** @type {!(Object|function)} */
   var method;
@@ -49,6 +50,8 @@ module.exports = function runTaskOnlyMethod(arg, result) {
     return false;
   }
 
+  if (!result) return false;
+
   try {
     method(arg.value);
   }
@@ -58,7 +61,11 @@ module.exports = function runTaskOnlyMethod(arg, result) {
     return false;
   }
 
-  title = fuse('Completed `', arg.name, '` task');
-  if (arg.exports.done !== false) log.pass(title);
+  if (arg.exports.done !== false) {
+    title = fuse('Completed `', arg.name, '` task');
+    if (end) log.pass.setFormat({ 'linesAfter': 1 });
+    log.pass(title);
+  }
+
   return result;
 };

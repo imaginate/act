@@ -29,10 +29,11 @@ var log  = help.log;
  * @param {(!Object|function)} method
  * @param {string} key
  * @param {?string} val
+ * @param {boolean} end
  * @param {boolean} result
  * @return {boolean}
  */
-module.exports = function runTaskMethod(arg, method, key, val, result) {
+module.exports = function runTaskMethod(arg, method, key, val, end, result) {
 
   /** @type {!TypeError} */
   var error;
@@ -50,6 +51,8 @@ module.exports = function runTaskMethod(arg, method, key, val, result) {
     return false;
   }
 
+  if (!result) return false;
+
   try {
     method(val);
   }
@@ -59,7 +62,11 @@ module.exports = function runTaskMethod(arg, method, key, val, result) {
     return false;
   }
 
-  title = fuse('Completed `', arg.name, '.', key, '` task');
-  if (arg.exports.done !== false) log.pass(title);
+  if (arg.exports.done !== false) {
+    title = fuse('Completed `', arg.name, '.', key, '` task');
+    if (end) log.pass.setFormat({ 'linesAfter': 1 });
+    log.pass(title);
+  }
+
   return result;
 };
