@@ -3,18 +3,18 @@
  * ACT
  * -----------------------------------------------------------------------------
  * @version 1.4.0
- * @see [act]{@link https://github.com/imaginate/act}
+ * @see [act](https://github.com/imaginate/act)
  *
- * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
- * @copyright 2017 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
+ * @author Adam Smith <adam@imaginate.life> (https://imaginate.life)
+ * @copyright 2017 Adam A Smith <adam@imaginate.life> (https://imaginate.life)
  *
  * Supporting Libraries:
- * @see [vitals]{@link https://github.com/imaginate/vitals}
- * @see [log-ocd]{@link https://github.com/imaginate/log-ocd}
+ * @see [vitals](https://github.com/imaginate/vitals)
+ * @see [log-ocd](https://github.com/imaginate/log-ocd)
  *
  * Annotations:
- * @see [JSDoc3]{@link http://usejsdoc.org/}
- * @see [Closure Compiler specific JSDoc]{@link https://developers.google.com/closure/compiler/docs/js-for-compiler}
+ * @see [JSDoc3](http://usejsdoc.org)
+ * @see [Closure Compiler JSDoc](https://developers.google.com/closure/compiler/docs/js-for-compiler)
  */
 
 'use strict';
@@ -42,11 +42,11 @@ var NODE = /^["']?(?:.+[\/\\])?node(?:.[a-z]+)?["']?$/;
 /** @type {!RegExp} */
 var ACT = /^["']?(?:.+[\/\\])?act(?:.js)?["']?$/;
 
-var findTaskDir  = require('./src/tasks/find-dir');
-var loadConfig   = require('./src/config/load');
-var showHelp     = require('./src/show/help');
-var showVersion  = require('./src/show/version');
-var runTasks     = require('./src/tasks/run');
+var findTaskDir = require('./src/tasks/find-dir');
+var loadConfig  = require('./src/config/load');
+var showHelp    = require('./src/show/help');
+var showVersion = require('./src/show/version');
+var runTasks    = require('./src/tasks/run');
 
 /**
  * @public
