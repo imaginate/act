@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "chalk": "1.x",
-    "mocha": "2.x"
+    "mocha": "3.x"
   },
   "keywords": [
     "imaginate",
