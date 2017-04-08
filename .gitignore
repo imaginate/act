@@ -1,6 +1,51 @@
-## DO NOT TRACK
-*.jpg
+## FILES TO NOT TRACK
+
+*.cab
+*.css.map
+*.lnk
 *.log
-*.png
-logs
-node_modules
+*.msi
+*.msm
+*.msp
+*.pids
+*.seed
+
+.*.swp
+._*
+
+.AppleDB
+.AppleDesktop
+.AppleDouble
+.DS_Store
+.LSOverride
+.Spotlight-V100
+.Trashes
+
+.apdisk
+.env
+.hg
+.lock-wscript
+.sass-cache
+
+$RECYCLE.BIN/
+CVS/
+Network Trash Folder/
+Temporary Items/
+
+build/
+coverage/
+devel/
+dist/
+lib-cov/
+log/
+logs/
+node_modules/
+pids/
+temp/
+tmp/
+www/
+
+Desktop.ini
+ehthumbs.db
+Thumbs.db
+
