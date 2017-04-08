@@ -1,6 +1,6 @@
-## License for [act](http://www.algorithmiv.com/act)
+## [act](https://github.com/imaginate/act) License
 
-**Copyright 2017 Adam A Smith [github.com/imaginate](https://github.com/imaginate)**
+**Copyright 2015-2017 [Adam A Smith](https://imaginate.life) <adam@imaginate.life>**
 
 Licensed under the **Apache License**, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,5 +14,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
---
-<a href="http://www.algorithmiv.com/act"><img src="http://www.algorithmiv.com/images/aIV-logo.png" alt="Algorithm IV Logo" /></a>
