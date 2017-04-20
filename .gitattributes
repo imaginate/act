@@ -182,7 +182,3 @@ Procfile    text
 *.tab  text
 *.tsv  text
 
-## LFS
-*.psd filter=lfs diff=lfs merge=lfs -text
-*.eps filter=lfs diff=lfs merge=lfs -text
-

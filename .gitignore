@@ -9,6 +9,8 @@
 *.msp
 *.pids
 *.seed
+*.temp
+*.tmp
 
 .*.swp
 ._*
