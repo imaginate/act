@@ -23,10 +23,8 @@ All contributions for [_act_](https://github.com/imaginate/act) are appreciated!
 
 ## Contact
 - **bugs and improvements:** [open an issue](https://github.com/imaginate/act/issues)
-- **all other questions:** adam@imaginate.life
+- **all other questions:** imagineadamsmith@gmail.com
 
 
---
-**Simple Is Better,**
-
-<a href="http://www.algorithmiv.com/act"><img src="http://www.algorithmiv.com/images/aIV-logo.png" alt="Algorithm IV Logo" /></a>
+----
+**Simple Is Better**

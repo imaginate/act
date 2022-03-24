@@ -84,10 +84,8 @@ You may create task aliases by adding an ``` alias ``` property to your ``` conf
 ## Other Details
 **contributing:** [see contributing guideline](https://github.com/imaginate/act/blob/master/CONTRIBUTING.md)<br>
 **bugs/improvements:** [open an issue](https://github.com/imaginate/act/issues)<br>
-**questions:** learn@algorithmiv.com
+**questions:** imagineadamsmith@gmail.com
 
 
---
-**Happy Developing,**
-
-<a href="http://www.algorithmiv.com/act"><img src="http://www.algorithmiv.com/images/aIV-logo.png" alt="Algorithm IV Logo" /></a>
+----
+**Happy Developing**

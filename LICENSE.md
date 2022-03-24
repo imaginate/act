@@ -1,6 +1,6 @@
 ## [act](https://github.com/imaginate/act) License
 
-**Copyright 2015-2017 [Adam A Smith](https://imaginate.life) <adam@imaginate.life>**
+**Copyright 2015-2022 [Adam A Smith](https://github.com/imaginate) <imagineadamsmith@gmail.com>**
 
 Licensed under the **Apache License**, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -5,8 +5,8 @@
  * @version 1.4.1
  * @see [act](https://github.com/imaginate/act)
  *
- * @author Adam Smith <adam@imaginate.life> (https://imaginate.life)
- * @copyright 2017 Adam A Smith <adam@imaginate.life> (https://imaginate.life)
+ * @author Adam Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
+ * @copyright 2022 Adam A Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
  *
  * Supporting Libraries:
  * @see [vitals](https://github.com/imaginate/vitals)

@@ -2,12 +2,12 @@
   "name": "node-act",
   "version": "1.4.1",
   "description": "a simple task runner",
-  "main": "dist/act.js",
+  "main": "act.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/imaginate/act.git"
   },
-  "author": "Adam Smith <adam@imaginate.life> (https://imaginate.life)",
+  "author": "Adam Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/imaginate/act/issues"
