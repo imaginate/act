@@ -2,7 +2,7 @@
  * ---------------------------------------------------------------------------
  * ACT
  * ---------------------------------------------------------------------------
- * @version 1.4.1
+ * @version 1.4.2
  * @see [Act](https://github.com/imaginate/act)
  *
  * @author Adam Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)

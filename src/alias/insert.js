@@ -2,7 +2,7 @@
  * -----------------------------------------------------------------------------
  * ACT: INSERT-ALIAS
  * -----------------------------------------------------------------------------
- * @version 1.4.1
+ * @version 1.4.2
  * @see [act]{@link https://github.com/imaginate/act}
  *
  * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
