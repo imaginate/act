@@ -1,16 +1,16 @@
 /**
- * -----------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------
  * ACT
- * -----------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------
  * @version 1.4.1
- * @see [act](https://github.com/imaginate/act)
+ * @see [Act](https://github.com/imaginate/act)
  *
  * @author Adam Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
  * @copyright 2022 Adam A Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
  *
  * Supporting Libraries:
- * @see [vitals](https://github.com/imaginate/vitals)
- * @see [log-ocd](https://github.com/imaginate/log-ocd)
+ * @see [Vitals](https://github.com/imaginate/vitals)
+ * @see [LogOCD](https://github.com/imaginate/log-ocd)
  *
  * Annotations:
  * @see [JSDoc3](http://usejsdoc.org)
@@ -67,7 +67,7 @@ module.exports = function initAct(cmd) {
   if ( is.str(cmd) ) {
     cmd = cut(cmd, TRIM_START);
     cmd = cut(cmd, TRIM_END);
-    args = cmd.split(' ');
+    args = cmd.split(/ +/);
   }
   else if ( is('!strings', cmd) ) {
     args = has(cmd[0], NODE) && has(cmd[1], ACT)
