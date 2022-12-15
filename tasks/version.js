@@ -1,7 +1,7 @@
 /**
- * -----------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------
  * LOCAL ACT TASK: version
- * -----------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------
  * @file Use `act version` to access this file.
  * @version 1.4.1
  *
@@ -134,6 +134,7 @@ function updateJs(version) {
         validExts: 'js',
         invalidDirs: '.*|node_modules|tmp'
     });
+    filepaths.push(resolve(ROOT_DIRPATH, 'bin/act'));
     each(filepaths, (filepath) => {
         updateJsFile(filepath, version);
     });
