@@ -1,13 +1,17 @@
 /**
- * -----------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------
  * ACT MOCHA REPORTER: base
- * -----------------------------------------------------------------------------
- * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
- * @copyright 2017 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
+ * ---------------------------------------------------------------------------
+ * @author Adam Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
+ * @copyright 2022 Adam A Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
+ *
+ * Supporting Libraries:
+ * @see [Vitals](https://github.com/imaginate/vitals)
+ * @see [LogOCD](https://github.com/imaginate/log-ocd)
  *
  * Annotations:
- * @see [JSDoc3](http://usejsdoc.org)
- * @see [Closure Compiler JSDoc Syntax](https://developers.google.com/closure/compiler/docs/js-for-compiler)
+ * @see [JSDoc3](https://jsdoc.app)
+ * @see [Closure Compiler JSDoc](https://developers.google.com/closure/compiler/docs/js-for-compiler)
  */
 
 'use strict';
@@ -29,7 +33,7 @@ module.exports = Base;
  * @return {string}
  */
 Runnable.prototype.fullTitle = function fullTitle() {
-  return this.parent.fullTitle() + ' -> ' + this.title;
+    return fuse(this.parent.fullTitle(), ' -> ', this.title);
 };
 
 /**
@@ -39,14 +43,9 @@ Runnable.prototype.fullTitle = function fullTitle() {
  * @return {string}
  */
 Suite.prototype.fullTitle = function fullTitle() {
-
-  /** @type {string} */
-  var title;
-
-  title = this.parent ? this.parent.fullTitle() || '' : '';
-  title += title && ' -> ';
-  title += this.title;
-  return title;
+    /** @const {string} */
+    const parentTitle = this.parent?.fullTitle() || '';
+    return fuse(parentTitle, parentTitle && ' -> ', this.title);
 };
 
 /**
@@ -57,35 +56,36 @@ Suite.prototype.fullTitle = function fullTitle() {
  */
 Base.list = function list(failures) {
 
-  /** @type {string} */
-  var title;
-  /** @type {!Error} */
-  var err;
-  /** @type {number} */
-  var len;
+    console.log(); // log empty line
 
-  console.log(); // log empty line
+    /** @const {number} */
+    const len = failures.length - 1;
+    each(failures, function(test, i) {
 
-  len = failures.length - 1;
-  each(failures, function(test, i) {
+        /** @const {string} */
+        const title = fuse('  ', ++i, ') ', test.fullTitle());
+        log.fail(title);
 
-    title = test.fullTitle();
-    title = fuse('  ', ++i, ') ', title);
-    log.fail(title);
+        /** @const {?Error} */
+        const newerr = is.error(test.err)
+            ? null
+            : new Error();
+        if (newerr) {
+            newerr.name    = test.err.name;
+            newerr.message = test.err.message;
+            newerr.stack   = test.err.stack;
+        }
+        /** @const {!Error} */
+        const err = newerr || test.err;
 
-    err = test.err;
+        if (same(i, len)) {
+            log.error.setFormat({
+                linesAfter: 0
+            });
+        }
 
-    if ( !is.error(err) ) {
-      err = new Error();
-      err.name    = test.err.name;
-      err.message = test.err.message;
-      err.stack   = test.err.stack;
-    }
-
-    if ( same(i, len) ) log.error.setFormat({ 'linesAfter': 0 });
-
-    log.error(err);
-  });
+        log.error(err);
+    });
 };
 
 /**
@@ -96,39 +96,37 @@ Base.list = function list(failures) {
  */
 Base.prototype.epilogue = function epilogue() {
 
-  /** @type {number} */
-  var indents;
-  /** @type {!Object} */
-  var stats;
-  /** @type {string} */
-  var time;
-  /** @type {string} */
-  var msg;
+    /** @const {!Object} */
+    const stats = this.stats;
 
-  stats = this.stats;
+    console.log();
 
-  console.log();
+    /** @const {string} */
+    const time = chalk.white.bold(fuse(
+        ' (', ms(stats.duration), ')'
+    ));
+    /** @const {string} */
+    const passMsg = chalk.green.bold(fuse(
+        ' ', stats.passes || 0,' passing'
+    ));
+    console.log(fuse(' ', passMsg, time));
 
-  time = ms(stats.duration);
-  time = ' (' + time + ')';
-  time = chalk.white.bold(time);
-  msg = ' ' + (stats.passes || 0) + ' passing';
-  msg = chalk.green.bold(msg);
-  msg = ' ' + msg + time;
-  console.log(msg);
+    if (stats.pending) {
+        /** @const {string} */
+        const pendingMsg = chalk.yellow.bold(fuse(
+            '  ', stats.pending, ' pending'
+        ));
+        console.log(pendingMsg);
+    }
 
-  if (stats.pending) {
-    msg = '  ' + stats.pending + ' pending';
-    msg = chalk.yellow.bold(msg);
-    console.log(msg);
-  }
+    if (stats.failures) {
+        /** @const {string} */
+        const failMsg = chalk.red.bold(fuse(
+            '  ', stats.failures, ' failing'
+        ));
+        console.log(failMsg);
+        Base.list(this.failures);
+    }
 
-  if (stats.failures) {
-    msg = '  ' + stats.failures + ' failing';
-    msg = chalk.red.bold(msg);
-    console.log(msg);
-    Base.list(this.failures);
-  }
-
-  console.log();
+    console.log();
 };

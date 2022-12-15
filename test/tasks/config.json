@@ -1,8 +1,11 @@
 {
   "alias": {
     "real": "free",
+    "good": "only",
     "upit": "only= 4 -you -one= 3 -one",
     "split|alias,names": "free"
   },
+  "throw": true,
+  "exit": false,
   "done": false
 }

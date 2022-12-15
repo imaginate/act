@@ -1,17 +1,21 @@
 /**
- * -----------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------
  * ACT UNIT TESTS: interface
- * -----------------------------------------------------------------------------
- * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
- * @copyright 2017 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
+ * ---------------------------------------------------------------------------
+ * @author Adam Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
+ * @copyright 2022 Adam A Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
+ *
+ * Supporting Libraries:
+ * @see [Vitals](https://github.com/imaginate/vitals)
+ * @see [LogOCD](https://github.com/imaginate/log-ocd)
  *
  * Annotations:
- * @see [JSDoc3](http://usejsdoc.org)
- * @see [Closure Compiler JSDoc Syntax](https://developers.google.com/closure/compiler/docs/js-for-compiler)
+ * @see [JSDoc3](https://jsdoc.app)
+ * @see [Closure Compiler JSDoc](https://developers.google.com/closure/compiler/docs/js-for-compiler)
  *
  * Copyright Notice:
  * The below code is a modified version of the Mocha [bdd interface](https://github.com/mochajs/mocha/blob/master/lib/interfaces/bdd.js).
- * @copyright 2017 TJ Holowaychuk <tj@vision-media.ca>
+ * @copyright 2011-2022 TJ Holowaychuk <tj@vision-media.ca>
  */
 
 'use strict';
@@ -20,7 +24,7 @@ var Mocha = require('mocha');
 var Suite = Mocha.Suite;
 var Test = Mocha.Test;
 
-Mocha.interfaces['act'] = Interface;
+Mocha.interfaces.act = Interface;
 
 module.exports = Interface;
 
