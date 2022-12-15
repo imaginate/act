@@ -13,7 +13,7 @@
     "url": "https://github.com/imaginate/act/issues"
   },
   "bin": {
-    "act": "bin/act.js"
+    "act": "bin/act"
   },
   "scripts": {
     "test": "node ./test/init.js"
