@@ -50,8 +50,14 @@ module.exports = function insertAlias(config, args) {
 
   /** @type {Args} */
   var newArgs;
+  /** @type {string} */
+  var rawArg;
   /** @type {Alias} */
   var alias;
+  /** @type {number} */
+  var last;
+  /** @type {number} */
+  var len;
   /** @type {string} */
   var cmd;
 
@@ -70,11 +76,15 @@ module.exports = function insertAlias(config, args) {
       }
     }
 
-    if ( has(alias, arg) ) {
-      cmd = alias[arg];
+    rawArg = cut(arg, VALUE);
+    if ( has(alias, rawArg) ) {
+      cmd = alias[rawArg];
       cmd = cut(cmd, TRIM_START);
       cmd = cut(cmd, TRIM_END);
-      args = cmd.split(' ');
+      args = cmd.split(/ +/);
+      len = args.length;
+      last = len - 1;
+      if ( len && has(arg, VALUE) ) args[last] = fuse(args[last], '=');
       newArgs = fuse(newArgs, args);
     }
     else newArgs = fuse.val(newArgs, arg);
