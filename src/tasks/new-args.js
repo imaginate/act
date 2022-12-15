@@ -213,7 +213,7 @@ function getTaskDefaultArgs(name, defaultArgs) {
   defaultArgs = cut(defaultArgs, regex);
 
   // convert to Args array and check for errors
-  args = defaultArgs.split(' ');
+  args = defaultArgs.split(/ +/);
   fail = until(false, args, function(arg, i, args) {
 
     if ( has(arg, METHOD) || ( i && has(args[--i], VALUE) ) ) return true;
