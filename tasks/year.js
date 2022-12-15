@@ -1,79 +1,89 @@
 /**
- * -----------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------
  * LOCAL ACT TASK: year
- * -----------------------------------------------------------------------------
- * @file Use `$ node bin/act year` to access this file.
+ * ---------------------------------------------------------------------------
+ * @file Use `act year` to access this file.
  * @version 1.4.1
  *
- * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
- * @copyright 2017 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
+ * @author Adam Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
+ * @copyright 2022 Adam A Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
  *
- * @see [JSDoc3](http://usejsdoc.org)
+ * @see [JSDoc3](https://jsdoc.app)
  * @see [Closure Compiler JSDoc](https://developers.google.com/closure/compiler/docs/js-for-compiler)
+ * @see [Node Path](https://nodejs.org/dist/latest-v14.x/docs/api/path.html)
+ * @see [Vitals](https://github.com/imaginate/vitals)
  */
 
 'use strict';
 
-////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 // EXPORTS
-////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
-exports['desc'] = 'updates year in entire repo';
-exports['value'] = '2xxx';
-exports['method'] = updateYear;
+exports.desc = 'updates year for entire repo';
+exports.value = '2xxx';
+exports.method = updateYear;
 
-////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 // HELPERS
-////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
-var vitals = require('node-vitals')('base', 'fs');
-var each   = vitals.each;
-var fuse   = vitals.fuse;
-var get    = vitals.get;
-var has    = vitals.has;
-var remap  = vitals.remap;
-var to     = vitals.to;
+const {
+    each,
+    fuse,
+    get,
+    has,
+    remap,
+    to
+} = require('node-vitals')('base', 'fs');
 
-var path = require('path');
-var resolve = path.resolve;
+const { resolve } = require('path');
 
-////////////////////////////////////////////////////////////
-// CONSTANTS
-////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// PATHS
+//////////////////////////////////////////////////////////////////////////////
 
-var ROOT = resolve(__dirname, '..');
+const ROOT_DIRPATH = resolve(__dirname, '..');
 
-var CPRT = /(copyright )2[0-9]{3}/ig;
-var YEAR = /^2[0-9]{3}$/;
+//////////////////////////////////////////////////////////////////////////////
+// PATTERNS
+//////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////
+const COPYRIGHT_PATT = /(?<=copyright (?:[0-9]{4} ?- ?)?)[2-9][0-9]{3}/ig;
+const YEAR_PATT = /^[2-9][0-9]{3}$/;
+
+//////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS
-////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 /**
  * @public
  * @param {string} year
+ * @return {void}
  */
 function updateYear(year) {
 
-  /** @type {!Array<string>} */
-  var filepaths;
+    if (!isYear(year)) {
+        throw new Error(fuse('invalid year`', year, "' (should be `2xxx')"));
+    }
 
-  if ( !isYear(year) ) throw new Error('invalid `year` - should be `2xxx`');
-
-  filepaths = get.filepaths('.', {
-    basepath:    true,
-    recursive:   true,
-    validExts:   'js|md',
-    invalidExts: 'json',
-    invalidDirs: '.*|node_modules|tmp'
-  });
-  insertYears(filepaths, year);
+    /** @type {!Array<string>} */
+    const filepaths = get.filepaths(ROOT_DIRPATH, {
+        basepath: true,
+        recursive: true,
+        validExts: 'js|md',
+        invalidExts: 'json',
+        invalidDirs: '.*|node_modules|tmp'
+    });
+    filepaths.push(resolve(ROOT_DIRPATH, 'bin/act'));
+    each(filepaths, (filepath) => {
+        insertYear(filepath, year);
+    });
 }
 
-////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 // PRIVATE METHODS
-////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 
 /**
  * @private
@@ -81,33 +91,19 @@ function updateYear(year) {
  * @return {boolean}
  */
 function isYear(year) {
-  return !!year && has(year, YEAR);
-}
-
-/**
- * @private
- * @param {!Array<string>} filepaths
- * @param {string} year
- */
-function insertYears(filepaths, year) {
-  year = fuse('$1', year);
-  each(filepaths, function(filepath) {
-    insertYear(filepath, year);
-  });
+    return !!year && has(year, YEAR_PATT);
 }
 
 /**
  * @private
  * @param {string} filepath
  * @param {string} year
+ * @return {void}
  */
 function insertYear(filepath, year) {
-
-  /** @type {string} */
-  var content;
-
-  content = get.file(filepath);
-  content = remap(content, CPRT, year);
-  to.file(content, filepath);
+    /** @const {string} */
+    const content = get.file(filepath);
+    /** @const {string} */
+    const result = remap(content, COPYRIGHT_PATT, year);
+    to.file(result, filepath);
 }
-
