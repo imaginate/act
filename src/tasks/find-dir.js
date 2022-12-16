@@ -2,7 +2,7 @@
  * ---------------------------------------------------------------------------
  * ACT: FIND-TASK-DIR
  * ---------------------------------------------------------------------------
- * @version 1.4.2
+ * @version 1.5.0
  * @see [Act](https://github.com/imaginate/act)
  *
  * @author Adam Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)

@@ -3,7 +3,7 @@
  * LOCAL ACT TASK: year
  * ---------------------------------------------------------------------------
  * @file Use `act year` to access this file.
- * @version 1.4.2
+ * @version 1.5.0
  *
  * @author Adam Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
  * @copyright 2022 Adam A Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
