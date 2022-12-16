@@ -19,13 +19,15 @@
 
 'use strict';
 
-var help = require('../../helpers');
-var cut   = help.cut;
-var fuse  = help.fuse;
-var get   = help.get;
-var is    = help.is;
-var remap = help.remap;
-var until = help.until;
+const {
+    cut,
+    fuse,
+    get,
+    is,
+    remap,
+    resolve,
+    until
+} = require('../../helpers');
 
 /**
  * @typedef {Array<?HelpTask>} HelpTasks
@@ -51,7 +53,7 @@ module.exports = function newHelpTasks(taskDir) {
   });
   tasks = remap(files, function(file) {
     name = cut(file, /.js$/);
-    file = fuse(taskDir, file);
+    file = resolve(taskDir, file);
     return newHelpTask(file, name);
   });
   tasks.error = until(true, tasks, function(task) {
