@@ -1,50 +1,54 @@
 /**
- * -----------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------
  * ACT: FIND-TASK-DIR
- * -----------------------------------------------------------------------------
+ * ---------------------------------------------------------------------------
  * @version 1.4.2
- * @see [act]{@link https://github.com/imaginate/act}
+ * @see [Act](https://github.com/imaginate/act)
  *
- * @author Adam Smith <adam@imaginate.life> (https://github.com/imaginate)
- * @copyright 2022 Adam A Smith <adam@imaginate.life> (https://github.com/imaginate)
+ * @author Adam Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
+ * @copyright 2022 Adam A Smith <imagineadamsmith@gmail.com> (https://github.com/imaginate)
  *
  * Supporting Libraries:
- * @see [vitals]{@link https://github.com/imaginate/vitals}
- * @see [log-ocd]{@link https://github.com/imaginate/log-ocd}
+ * @see [Vitals](https://github.com/imaginate/vitals)
+ * @see [LogOCD](https://github.com/imaginate/log-ocd)
  *
  * Annotations:
- * @see [JSDoc3]{@link http://usejsdoc.org/}
- * @see [Closure Compiler specific JSDoc]{@link https://developers.google.com/closure/compiler/docs/js-for-compiler}
+ * @see [JSDoc3](http://usejsdoc.org)
+ * @see [Closure Compiler JSDoc](https://developers.google.com/closure/compiler/docs/js-for-compiler)
  */
 
 'use strict';
 
-var help  = require('../helpers');
-var get   = help.get;
-var fuse  = help.fuse;
-var log   = help.log;
-var remap = help.remap;
-var same  = help.same;
-var until = help.until;
+const {
+    cut,
+    get,
+    fuse,
+    log,
+    remap,
+    resolve,
+    same,
+    until
+} = require('../helpers');
+const END_SLASH = /(?<=[\s\S])\/$/;
 
 // all valid dirs
-var ACT_DIRS_REGEX = /^(?:[aA]ct|[tT]asks?|[aA]ct-?tasks?)$/;
+const ACT_DIR_PATT = /^(?:[aA]ct|[tT]asks?|[aA]ct-?tasks?)$/;
 // dirs in order of validity
-var ACT_DIRS_ARR = [
-  'Act-tasks',
-  'act-tasks',
-  'Acttasks',
-  'acttasks',
-  'Act-task',
-  'act-task',
-  'Acttask',
-  'acttask',
-  'Act',
-  'act',
-  'Tasks',
-  'tasks',
-  'Task',
-  'task'
+const ACT_DIR_RANK = [
+    'Act-tasks',
+    'act-tasks',
+    'Acttasks',
+    'acttasks',
+    'Act-task',
+    'act-task',
+    'Acttask',
+    'acttask',
+    'Act',
+    'act',
+    'Tasks',
+    'tasks',
+    'Task',
+    'task'
 ];
 
 /**
@@ -53,37 +57,89 @@ var ACT_DIRS_ARR = [
  */
 module.exports = function findTaskDir(basepath) {
 
-  /** @type {string} */
-  var actdir;
-  /** @type {!Error} */
-  var error;
-  /** @type {!Array<string>} */
-  var dirs;
-  /** @type {number} */
-  var i;
+    /** @type {string} */
+    var actdir;
+    /** @type {!Error} */
+    var error;
+    /** @type {!Array<string>} */
+    var dirs;
+    /** @type {number} */
+    var i;
 
-  basepath = remap(basepath, /\\/g, '/');
-  dirs = get.dirpaths(basepath, {
-    validDirs: ACT_DIRS_REGEX
-  });
+    /** @type {?string} */
+    let taskpath = getTaskDirpath(basepath);
+    if (taskpath) {
+        return taskpath;
+    }
 
-  if (!dirs.length) {
-    error = new Error('no valid `act-task` directory found');
-    log.error('Failed `act` command', error);
-    return '';
-  }
-
-  if (dirs.length > 1) {
-    i = 0;
-    until(true, dirs, function(dir) {
-      if ( same(dir, ACT_DIRS_ARR[i]) ) {
-        actdir = dir;
-        return true;
-      }
-      ++i;
+    /** @type {string} */
+    let prevpath = '';
+    /** @type {string} */
+    let nextpath = basepath;
+    /** @const {boolean} */
+    const stable = until(true, 1e6, () => {
+        prevpath = nextpath;
+        nextpath = resolve(prevpath, '..');
+        taskpath = getTaskDirpath(nextpath);
+        return !!taskpath || prevpath === nextpath;
     });
-  }
-  else actdir = dirs[0];
+    if (taskpath) {
+        return taskpath;
+    }
 
-  return fuse(basepath, '/', actdir, '/');
+    /** @type {string} */
+    let msg = fuse(
+        'No valid Act task directory found.\n',
+        'The task directory name must match the below pattern.\n',
+        "    pattern = `^(?:[aA]ct|[tT]asks?|[aA]ct-?tasks?)$'"
+    );
+    if (!stable) {
+        msg = fuse('Max parent directories searched (1,000,000).\n', msg);
+    }
+    log.error("Failed `act' command.", new Error(msg));
+    return '';
 };
+
+/**
+ * @private
+ * @param {string} dirpath
+ * @return {?string}
+ */
+function getTaskDirpath(dirpath) {
+    /** @const {?string} */
+    const dirname = getTaskDirname(dirpath);
+    return dirname && resolve(dirpath, dirname);
+}
+
+/**
+ * @private
+ * @param {string} dirpath
+ * @return {?string}
+ */
+function getTaskDirname(dirpath) {
+
+    /** @const {!Array<string>} */
+    const dirnames = remap(get.dirpaths(dirpath, {
+        validDirs: ACT_DIR_PATT
+    }), (dirname) => {
+        return cut(dirname, END_SLASH);
+    });
+    switch (dirnames.length) {
+        case 0:
+            return null;
+        case 1:
+            return dirnames[0];
+    }
+
+    /** @const {!Set<string>} */
+    const dirset = new Set(dirnames);
+    /** @type {?string} */
+    let dirname = null;
+    until(true, ACT_DIR_RANK, (_dirname) => {
+        if (dirset.has(_dirname)) {
+            dirname = _dirname;
+            return true;
+        }
+    });
+    return dirname;
+}
