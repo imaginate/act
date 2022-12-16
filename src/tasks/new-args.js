@@ -19,15 +19,17 @@
 
 'use strict';
 
-var help = require('../helpers');
-var cut   = help.cut;
-var fuse  = help.fuse;
-var has   = help.has;
-var is    = help.is;
-var log   = help.log;
-var roll  = help.roll;
-var slice = help.slice;
-var until = help.until;
+const {
+    cut,
+    fuse,
+    has,
+    is,
+    log,
+    resolve,
+    roll,
+    slice,
+    until
+} = require('../helpers');
 
 /**
  * @typedef {?{
@@ -158,7 +160,7 @@ function getTaskExports(taskDir, name) {
   /** @type {string} */
   var file;
 
-  file = fuse(taskDir, name, '.js');
+  file = resolve(taskDir, fuse(name, '.js'));
 
   if ( !is.file(file) ) {
     error = new ReferenceError('task does not exist');
