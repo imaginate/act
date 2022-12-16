@@ -8,7 +8,9 @@
 
 'use strict';
 
-process.chdir('test');
+const { resolve } = require('path');
+
+process.chdir(resolve(__dirname, 'reporters'));
 
 require('./helpers');
 require('./interface');
