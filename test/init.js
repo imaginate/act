@@ -18,9 +18,11 @@
 
 'use strict';
 
-var log = require('log-ocd')();
-var fuse = require('node-vitals')('fuse');
-var Mocha = require('mocha');
+const { resolve } = require('path');
+const log = require('log-ocd')();
+const fuse = require('node-vitals')('fuse');
+const Mocha = require('mocha');
+const ROOT_DIRPATH = resolve(__dirname);
 
 log.error.setConfig({
   'throw': false,
@@ -39,12 +41,12 @@ function runTests() {
 
   log.debug('Starting `act` tests');
 
-  require('../test/setup');
+  require(resolve(ROOT_DIRPATH, 'setup'));
 
   mocha = new Mocha();
   mocha.reporter('specky');
   mocha.ui('act');
-  mocha.addFile('tests.js');
+  mocha.addFile(resolve(ROOT_DIRPATH, 'tests.js'));
 
   try {
     mocha.run(function() {
